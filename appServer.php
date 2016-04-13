@@ -10,6 +10,7 @@
 define('FUNCTION_PATH', __DIR__.'/function/');
 define('LIB_PATH',__DIR__.'/lib/');
 define('INIT_PATH', __DIR__.'/init/');
+define('MOD_PATH',__DIR__.'/mod/');
 
 
 //引入内部函数库
@@ -49,6 +50,22 @@ function getFiles($path){
 	return $files_pool;
 }
 
+/**
+ * [init 初始化]
+ * @return [type] [description]
+ */
+function init(){
+	$init_files = getFiles(INIT_PATH);
+	if(!empty($init_files)){
+		array_walk($init_files, function($file){
+			$temp = explode('.', $file);
+			if(isset($temp[1]) && $temp[1]==='php'){
+				require_once($file);
+			}
+		});
+	}
+}
+
 //加载模块化的初始行为
 init();
 
@@ -56,17 +73,4 @@ init();
 global $php;
 
 $server = new \Lib\AppServer();
-
-function init(){
-	$init_files = getFiles(INIT_PATH);
-	if(!empty($init_files)){
-	array_walk($init_files, function($file){
-		$temp = explode('.', $file);
-		if(isset($temp[1]) && $temp[1]==='php'){
-			require_once($file);
-		}
-	});
-}
-
-
-}
+$server::run();

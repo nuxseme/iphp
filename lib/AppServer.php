@@ -5,6 +5,11 @@ class AppServer{
 
 	public function __construct(){
 
-		echo 'hello Appserver';
+		echo __FILE__.':'."hello Appserver\n";
+	}
+
+	static function run(){
+
+		echo '我跑起来了';
 	}
 }
