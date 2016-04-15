@@ -4,6 +4,38 @@
 ##定义环境变量
 ##引入内部函数库  内部函数必须以.php结尾
 ##开启服务
+## swoole以php扩展形式内置 可直接使用
+
+//环境检测
+
+define('ENV','dev');
+
+//取得应用
+if(ENV==='pro' && isset($argv[1]) && empty($app_name = $argv[1])) {
+    exit("Usage: appServer.php app_name" . PHP_EOL);
+}
+//PHP版本
+if(version_compare(PHP_VERSION, '5.4.0','<')){
+	exit('php version >=5.4.0 require'.PHP_EOL);
+}
+
+//是否安装了swoole扩展
+if(!get_extension_funcs('swoole')){
+	exit('HttpServer need swoole extension'.PHP_EOL);
+}
+
+//swoole版本检查
+if (version_compare(SWOOLE_VERSION, '1.7.16', '<')) {
+    exit("HttpServer Swoole >= 1.7.16 required " . PHP_EOL);
+}
+
+
+//需要exec执行命令
+if (!function_exists('exec')) {
+    exit("HttpServer must enable exec " . PHP_EOL);
+}
+
+
 
 
 //定义环境变量
@@ -15,12 +47,13 @@ define('MOD_PATH',__DIR__.'/mod/');
 
 //引入内部函数库
 $function_files = getFiles(FUNCTION_PATH);
-if(!empty($function_files)){
+if(!empty($function_files) && is_array($function_files)){
 	array_walk($function_files, function($file){
 		$temp = explode('.', $file);
 		if(isset($temp[1]) && $temp[1]==='php'){
 			//内部函数必须以.php结尾
-			require_once($file);
+			if(is_file($file))
+				require_once($file);
 		}
 	});
 }
@@ -31,10 +64,9 @@ if(!empty($function_files)){
  * @return [type]       [返回一维数组]
  */
 function getFiles($path){
-	if(substr($path,-1)==='/'){
-		$path = rtrim($path,'/');
-	}
-    if(!is_dir($path))return $path.' 不是合法的路径';
+
+	$path = rtrim($path,'/');
+    if(!is_dir($path))return [];
     $files_pool = [];
 	$files = scandir($path);
 	foreach ($files as $item) {
@@ -56,11 +88,12 @@ function getFiles($path){
  */
 function init(){
 	$init_files = getFiles(INIT_PATH);
-	if(!empty($init_files)){
+	if(!empty($init_files) && is_array($init_files)){
 		array_walk($init_files, function($file){
 			$temp = explode('.', $file);
 			if(isset($temp[1]) && $temp[1]==='php'){
-				require_once($file);
+				if(is_file($file))
+					require_once($file);
 			}
 		});
 	}
@@ -69,8 +102,12 @@ function init(){
 //加载模块化的初始行为
 init();
 
+
 //全局挂载树
 global $php;
+$server = new Lib\AppServer();
+//HttpServer  解析完 http请求体  appServer 接收
+$server->setProcReqFun([$server,'start']);
+$server->run();
 
-$server = new \Lib\AppServer();
-$server::run();
+

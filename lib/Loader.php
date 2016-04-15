@@ -22,9 +22,10 @@ class Loader{
 	}
 
 	/**
-	 * 加载一个模型对象
-	 * @param $model_name 模型名称
-	 * @return $model_object 模型对象
+	 * [loadModel 加载模型]
+	 * @param  string $model_name [name]
+	 * @param  string $prefix     [前缀]
+	 * @return [obj]             [模型]
 	 */
 	static function loadModel($model_name='',$prefix=''){
 		if(empty($model_name)){
@@ -32,11 +33,10 @@ class Loader{
 		}
 		$mod_key = $model_name;
 		if(isset(self::$_objects['model'][$mod_key])){
+			//除去模型已经存在的error
 			self::$_objects['model'][$mod_key]->clearError();
 			return self::$_objects['model'][$mod_key];
-		}
-		else
-		{
+		}else{
 			if($model_name{0}=='#'){
 				$model_name = substr($model_name,1);
 				$mod = '\\Mod\\'.$model_name;
