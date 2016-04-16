@@ -22,9 +22,9 @@ class AppServer extends HttpServer{
 
 
 	public function start(){
-
+		ob_start();
 		echo __METHOD__.PHP_EOL;
-
+		echo '测试ob_get_clean()';
 		$respData = ob_get_clean();
 		$this->response($respData);
 	}

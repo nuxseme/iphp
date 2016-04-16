@@ -89,7 +89,7 @@ class HttpServer{
     */
     public function response($respData, $code = 200){
 
-    	$this->rs->write('hello client');
+    	$this->rs->write($respData);
 		$this->rs->end();
         /*if(empty($this->rs)){
             return false;
