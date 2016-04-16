@@ -1,0 +1,14 @@
+[2016-04-16 02:58:38 @123762.0]	WARN	swServer_start_check: serv->max_connection is exceed the maximum value[1024].
+[2016-04-16 02:58:38 @123762.0]	WARN	swSocket_listen: bind(0.0.0.0:80) failed. Error: Address already in use [98]
+[2016-04-16 02:58:38 @123762.0]	WARN	swServer_start_proxy: ReactorThread start failed
+[2016-04-16 02:58:38 @123762.0]	NOTICE	Server is shutdown now.
+[2016-04-16 03:00:16 @123935.0]	WARN	swServer_start_check: serv->max_connection is exceed the maximum value[1024].
+[2016-04-16 03:00:16 @123935.0]	WARN	swSocket_listen: bind(0.0.0.0:80) failed. Error: Address already in use [98]
+[2016-04-16 03:00:16 @123935.0]	WARN	swServer_start_proxy: ReactorThread start failed
+[2016-04-16 03:00:16 @123935.0]	NOTICE	Server is shutdown now.
+[2016-04-16 03:03:06 @124228.0]	WARN	swServer_start_check: serv->max_connection is exceed the maximum value[1024].
+Lib\HttpServer::onRequest
+Lib\HttpServer::onRequest
+Lib\HttpServer::onRequest
+Lib\HttpServer::onRequest
+Lib\HttpServer::onRequest

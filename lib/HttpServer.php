@@ -18,11 +18,11 @@ class HttpServer{
 		echo __METHOD__.PHP_EOL;
 
 		$swcfg = [
-                'log_file' => '/home/www/iphp/log/httpServer',
+                'log_file' => '/home/www/iphp/log/httpServer.log',
                 'worker_num' => 8,
                 'max_request' => 100000,
-                'max_conn' => 10000,
-                'daemonize' => 0,
+                'max_conn' => 256,
+                'daemonize' => 0,//是否退化为守护进程
             ];
        
         $server = new \swoole_http_server('0.0.0.0', 80);

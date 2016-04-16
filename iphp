@@ -1,1 +1,56 @@
 #!/bin/bash
+
+FRAME_PATH='/home/www/iphp'
+PHP7='/usr/bin/php'
+PHP5='/usr/bin/php5'
+#设定默认指令
+if [ -z "$1" ];then
+	cmd='start'
+else
+	cmd=$1
+fi
+
+start(){
+	cmd_ret=`$PHP7 $FRAME_PATH/appServer.php`
+	echo $cmd_ret
+}
+stop(){
+
+	echo 'stop'
+}
+
+status(){
+
+	echo 'status'
+}
+list(){
+
+	echo 'list'
+}
+restart(){
+
+	echo 'resatrt'
+}
+
+case $cmd in
+	start)
+		start
+		exit 0;;
+   
+	stop)
+		stop
+		exit 0;;
+    status)
+		status
+		exit 0;;
+	list)
+		list
+		exit 0;;
+	restart)
+		restart
+		exit 0;;
+	*)
+		echo "usage $0 [start|stop|status|list|restart] "
+		exit 1;;
+esac
+exit 0
