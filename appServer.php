@@ -39,11 +39,12 @@ if (!function_exists('exec')) {
 
 
 //定义环境变量
+define('FRAME_PATH', __DIR__.'/');
 define('FUNCTION_PATH', __DIR__.'/function/');
 define('LIB_PATH',__DIR__.'/lib/');
 define('INIT_PATH', __DIR__.'/init/');
 define('MOD_PATH',__DIR__.'/mod/');
-
+define('CONFIG_PATH', __DIR__.'/config/');
 
 //引入内部函数库
 $function_files = getFiles(FUNCTION_PATH);
@@ -102,10 +103,12 @@ function init(){
 //加载模块化的初始行为
 init();
 
-
+$config_file=CONFIG_PATH.'server.ini';
+$config=parse_ini_file($config_file,true);
+print_r($config);
 //全局挂载树
 global $php;
-$server = new Lib\AppServer();
+$server = new Lib\AppServer($config);
 //HttpServer  解析完 http请求体  appServer 接收
 $server->setProcReqFun([$server,'start']);
 $server->run();

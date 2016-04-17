@@ -7,25 +7,29 @@
 
 namespace Lib;
 class HttpServer{
-
+    public $config;
 	public $_onRequest;//HttpServer转交给AppServer的回调函数
 	//public $serv;
 	public $rs;//响应句柄
-	public function __construct(){}
+	public function __construct($config){
+        $this->config = $config;
+    }
 
 
 	public function run(){
 		echo __METHOD__.PHP_EOL;
 
 		$swcfg = [
-                'log_file' => '/home/www/iphp/log/httpServer.log',
-                'worker_num' => 8,
+                'log_file' => FRAME_PATH.'/log/httpServer.log',
+                'worker_num' => 2,
                 'max_request' => 100000,
                 'max_conn' => 256,
-                'daemonize' => 0,//是否退化为守护进程
+                'daemonize' => 1,//是否退化为守护进程
             ];
-       
-        $server = new \swoole_http_server('0.0.0.0', 80);
+       print_r($this->config);
+       $port = val($this->config,'port');
+       echo $port;
+        $server = new \swoole_http_server('0.0.0.0', $this->config['port']);
         //$this->serv = $server;
         $server->set($swcfg);
         //$this->config = array_merge($this->config,$server->setting);

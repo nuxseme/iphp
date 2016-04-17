@@ -40,8 +40,8 @@ class Error{
 	    }  
 	  
 	    /* Don't execute PHP internal error handler */  
-	    debug_print_backtrace();
-	    print_r(deubug_backtrace());
+	    //debug_print_backtrace();
+	    //print_r(deubug_backtrace());
 	    return true;  
 	}
 

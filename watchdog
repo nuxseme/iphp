@@ -1,0 +1,77 @@
+#!/bin/bash
+#目录守护犬
+
+iphp_path='/Users/hyd/work/iphp'
+watchdoglog=$iphp_path/log/watchdog.log
+watchdir=$iphp_path
+nowatchdir=$iphp_path/log
+ok='[\033[0;32;1mok\033[0m]'
+fail='[\033[0;31;1mok\033[0m]'
+
+list(){
+	ps aux | grep watchdog |grep -v grep |grep -v watchdogd| grep -v list|grep -v stop|grep -v restart|awk '{print $2" "$12" "$13}'
+}
+
+start(){
+	#监控执行
+	fswatch $1 -e $2 |while read event;
+	do 
+	   iphp restart
+	   echo `date '+%m-%d %H:%M:%S'` $event >> $watchdoglog
+	   sleep 2
+	done >> /dev/null &
+	echo -e "start $0 [\033[0;32;1mok\033[0m]"
+	#done 
+	#| awk '{print datenow " " $1}' datenow="`date +%m-%d-%H:%M:%S`" >> $watchdoglog
+	
+}
+
+stop(){
+
+	$0 list |while read pid; 
+	do
+		pid_no=`echo $pid|awk '{print $1}'`
+		kill -15 $pid_no
+		echo -e "Stopping $pid [\033[0;32;1mok\033[0m]"
+	done 
+}
+restart(){
+	$0 stop 
+	$0 start >> /dev/null
+	echo -e "Restart $0 [\033[0;32;1mok\033[0m]"
+}
+
+
+#参数处理start
+if [  -z "$1" ];then
+	start $watchdir $nowatchdir
+else
+	case $1 in
+		list )
+			list
+			exit 0;;
+		stop )
+			stop
+			exit 0;;
+		start )
+			start $watchdir $nowatchdir
+			exit 0;;
+		restart )
+			restart
+			exit 0;;
+		*)
+			if [ ! -d $1 ];then
+				echo "Usage watchdog [dir|list|start|stop|restart]"
+				exit 1
+			else
+				start $1 $nowatchdir
+			fi
+		exit 0;;
+	esac
+fi
+#参数处理end
+exit 0
+
+
+
+

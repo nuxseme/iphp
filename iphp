@@ -1,35 +1,59 @@
 #!/bin/bash
 
-FRAME_PATH='/home/www/iphp'
-PHP7='/usr/bin/php'
+iphp_path='/Users/hyd/work/iphp'
+iphplog=$iphp_path/log/iphp.log
+iphp_config=$iphp_path/config/server.ini
+PHP7='/usr/local/bin/php'
 PHP5='/usr/bin/php5'
+fail='[\033[1;31mfail\033[0m]'
+ok='[\033[1;32mOK\033[0m]'
+
 #设定默认指令
 if [ -z "$1" ];then
 	cmd='start'
 else
 	cmd=$1
 fi
-
 start(){
-	cmd_ret=`$PHP7 $FRAME_PATH/appServer.php`
-	echo $cmd_ret
+	out=`$PHP7 $iphp_path/appServer.php &`
+	if [ ! -z "$out" ];then
+		echo -e "Start appServer $ok"
+	else
+		echo -e "Start appServer $fail"
+	fi
 }
 stop(){
-
-	echo 'stop'
+	echo -e "Stopping \c"
+	pids=`$0 list |awk '{print $1}'` 
+	while [ ! -z "$pids" ] ; do			
+		echo  -e ".\c"
+		kill -9 $pids
+		sleep 0.1
+		pids=`$0 list|awk '{print $1}'`
+	done
+	echo -e " [\033[0;32;1mok\033[0m]"
+	
 }
 
 status(){
 
-	echo 'status'
+	$0 list
+	if [ -f "$iphp_config" ];then
+		host=`cat $iphp_config |grep host|awk -F '=' '{print $2}'`
+		port=`cat $iphp_config |grep port|awk -F '=' '{print $2}'`
+		echo "host:$host   port:$port"
+	else
+		echo "can't get config file"
+	fi
 }
 list(){
-
-	echo 'list'
+	ps aux|grep appServer|grep -v grep |awk '{print $2" "$12}'
 }
 restart(){
-
-	echo 'resatrt'
+    $0 stop 
+	$0 start
+	echo -e "Restart $ok"
+	echo `date '+%m-%d %H:%M:%S'` resatrt >>$iphplog
 }
 
 case $cmd in
