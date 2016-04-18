@@ -9,7 +9,7 @@ namespace Lib;
 class HttpServer{
     public $config;
 	public $_onRequest;//HttpServer转交给AppServer的回调函数
-	//public $serv;
+	public $http_server;
 	public $rs;//响应句柄
 	public function __construct($config){
         $this->config = $config;
@@ -24,13 +24,12 @@ class HttpServer{
                 'worker_num' => 2,
                 'max_request' => 100000,
                 'max_conn' => 256,
-                'daemonize' => 1,//是否退化为守护进程
+                'daemonize' => 0,//是否退化为守护进程
+                'task_worker_num'=>4//工作进程数
             ];
-       print_r($this->config);
-       $port = val($this->config,'port');
-       echo $port;
-        $server = new \swoole_http_server('0.0.0.0', $this->config['port']);
-        //$this->serv = $server;
+
+        $server = new \swoole_http_server(val($this->config,'ip'), val($this->config,'port'));
+        $this->http_server = $server;
         $server->set($swcfg);
         //$this->config = array_merge($this->config,$server->setting);
         // $server->on('Start',array($this,'onStart'));
@@ -40,8 +39,8 @@ class HttpServer{
          $server->on('Request', array($this, 'onRequest'));
         // $server->on('Close', array($this, 'onClose'));
         // $server->on('Shutdown', array($this, 'onShutdown'));
-        // $server->on('Task', array($this, 'onTask'));
-        // $server->on('Finish', array($this, 'onFinish'));
+         $server->on('Task', array($this, 'onTask'));
+         $server->on('Finish', array($this, 'onFinish'));
         // $server->on('WorkerStop',[$this,'onWorkerStop']);
         // $server->on('WorkerError',[$this,'onWorkerError']);
         // $server->on('Timeout',[$this,'onTimeout']);
@@ -129,6 +128,42 @@ class HttpServer{
         return true;
     }
 
+    /**
+    * 异步任务回调函数
+    * @access public
+    * @param \swoole_server $serv
+    * @param int $task_id
+    * @param int $from_id
+    * @param string $data
+    * @return void
+    */
+    public function onTask($serv, $task_id, $from_id, $data){
+        try{
+            $task_data = @json_decode(gzuncompress($data),true);
+            if(empty($task_data)){
+                return;
+            }
+            $task_name = $task_data['name'];
+            $data = $task_data['data'];
+            $task = '\\task\\'.ucwords($task_name);
+            $task::run($data);
+        }catch(Exception $e){
+            //$this->log($e->getMessage());
+            print_r($e);
+        }
+        // $serv->finish();
+    }
 
+    /**
+    * 异步任务结束时回调函数
+    * @access public
+    * @param \swoole_server $var
+    * @param int $task_id
+    * @param string $data
+    * @return void
+    */
+    public function onFinish($serv, $task_id, $data){
+        echo 'task data:'.$data;
+    }
 
 }

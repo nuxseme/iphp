@@ -16,7 +16,7 @@ function helloworld(){
 
 function val(&$obj,$key,$default=''){
 	if(is_array($obj)){
-		return isset($array[$key])?$array[$key]:$default;
+		return isset($obj[$key])?$obj[$key]:$default;
 	}elseif(is_object($obj)){
 		return isset($obj->$key)?$obj->$key:$default;
 	}

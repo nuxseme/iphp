@@ -7,6 +7,7 @@
 namespace Lib;
 class Error{
 
+	
 	public function  error($errno, $errstr, $errfile, $errline){
 		$err_data = [
 

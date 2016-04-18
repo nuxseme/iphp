@@ -102,15 +102,17 @@ function init(){
 
 //加载模块化的初始行为
 init();
-
+//加载配置
 $config_file=CONFIG_PATH.'server.ini';
-$config=parse_ini_file($config_file,true);
-print_r($config);
+if(is_file($config_file))
+	$config=parse_ini_file($config_file,true);
+
 //全局挂载树
 global $php;
 $server = new Lib\AppServer($config);
+//将应用服务器挂载到全局树上
+$php = &$server;
 //HttpServer  解析完 http请求体  appServer 接收
 $server->setProcReqFun([$server,'start']);
 $server->run();
-
 

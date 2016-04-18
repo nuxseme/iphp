@@ -1,10 +1,31 @@
 #!/bin/bash
+# for mac
+os=`uname -s`
 
-iphp_path='/Users/hyd/work/iphp'
+Linux(){
+	iphp_path='/home/www/iphp'
+	PHP7='/usr/bin/php'
+	PHP5='/usr/local/php5.6/bin/php'
+}
+
+Mac(){
+	iphp_path='/Users/hyd/work/iphp'
+	PHP7='/usr/local/bin/php'
+	PHP5='/usr/bin/php5'
+}
+case $os in
+	Linux)
+		Linux
+	;;
+	Mac)
+		Mac
+	;;
+    *)
+		echo $os
+	exit 1;;
+esac
 iphplog=$iphp_path/log/iphp.log
 iphp_config=$iphp_path/config/server.ini
-PHP7='/usr/local/bin/php'
-PHP5='/usr/bin/php5'
 fail='[\033[1;31mfail\033[0m]'
 ok='[\033[1;32mOK\033[0m]'
 

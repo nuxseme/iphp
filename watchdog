@@ -1,5 +1,5 @@
 #!/bin/bash
-#目录守护犬
+#目录守护犬 for mac
 
 iphp_path='/Users/hyd/work/iphp'
 watchdoglog=$iphp_path/log/watchdog.log
