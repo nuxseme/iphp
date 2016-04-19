@@ -28,14 +28,14 @@ class HttpServer{
                 'task_worker_num'=>4//工作进程数
             ];
 
-        $server = new \swoole_http_server(val($this->config,'ip'), val($this->config,'port'));
+        $server = new \swoole_http_server(val($this->config,'host'), val($this->config,'port'));
         $this->http_server = $server;
         $server->set($swcfg);
         //$this->config = array_merge($this->config,$server->setting);
-        // $server->on('Start',array($this,'onStart'));
-        // $server->on('ManagerStart', array($this,'onManagerStart'));
-        // $server->on('ManagerStop', array($this,'onManagerStop'));
-        // $server->on('WorkerStart',array($this,'onWorkerStart'));
+         //$server->on('Start',array($this,'onStart'));
+         //$server->on('ManagerStart', array($this,'onManagerStart'));
+         //$server->on('ManagerStop', array($this,'onManagerStop'));
+         //$server->on('WorkerStart',array($this,'onWorkerStart'));
          $server->on('Request', array($this, 'onRequest'));
         // $server->on('Close', array($this, 'onClose'));
         // $server->on('Shutdown', array($this, 'onShutdown'));
@@ -46,10 +46,60 @@ class HttpServer{
         // $server->on('Timeout',[$this,'onTimeout']);
         $server->start();
 	}
-	public function onStart(){
+	
+    /**
+    * 主进程启动时回调函数
+    * @access public
+    * @param \swoole_server $serv
+    * @return void
+    */
+    public function onMasterStart($serv){
+        //$this->log(SERVER_NAME."[#master] start");
+    }
 
-		echo __METHOD__.PHP_EOL;
-	}
+    /**
+    * 管理进程启动时回调函数
+    * @access public
+    * @param \swoole_server $serv
+    * @return void
+    */
+    public function onManagerStart($serv){
+        global $config_file;
+        $this->setProcessName('php-manager:  ('.$config_file.')');
+        //$this->log(SERVER_NAME."[#manager] start");
+    }
+     /**
+    * 管理进程结束时回调函数
+    * @access public
+    * @param \swoole_server $serv
+    * @return void
+    */
+    public function onManagerStop($serv){
+        //$this->log(SERVER_NAME."[#manager] stop");
+    }
+
+    /**
+    * 服务器关闭时回调函数
+    * @access public
+    * @param \swoole_server $serv
+    * @return void
+    */
+    public function onShutdown($serv){
+        //exec('rm -rf '.SHM_PATH);
+        //$this->log(SERVER_NAME." shutdown");
+        //apply_action('on_shutdown',$this,$serv);
+    }
+
+    /**
+    * 服务器启动时回调函数
+    * @access public
+    * @param \swoole_server $serv
+    * @return void
+    */
+    public function onStart($serv){
+        $this->setProcessName('php-master:  host=' . $this->config['host'] . ' port=' . $this->config['port']);
+        //apply_action('server_start',$serv);
+    }
 
 	 /**
     * 请求处理函数
@@ -59,7 +109,6 @@ class HttpServer{
     * @return void
     */
     public function onRequest(\swoole_http_request $rq,\swoole_http_response $rs){
-    //public function onRequest(){
 
     	try{
     		echo __METHOD__.PHP_EOL;
@@ -145,7 +194,7 @@ class HttpServer{
             }
             $task_name = $task_data['name'];
             $data = $task_data['data'];
-            $task = '\\task\\'.ucwords($task_name);
+            $task = '\\Task\\'.ucwords($task_name);
             $task::run($data);
         }catch(Exception $e){
             //$this->log($e->getMessage());

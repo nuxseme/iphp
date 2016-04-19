@@ -1,6 +1,14 @@
 #!/bin/bash
 # for mac
-os=`uname -s`
+os_linux=`uname -a|grep Linux`
+os_mac=`uname -a|grep Mac`
+if [ ! -z "$os_mac" ];then
+	os=Mac
+else 
+	if [ ! -z "$os_linux" ];then
+		os=Linux
+	fi
+fi
 
 Linux(){
 	iphp_path='/home/www/iphp'
@@ -36,7 +44,7 @@ else
 	cmd=$1
 fi
 start(){
-	out=`$PHP7 $iphp_path/appServer.php &`
+	out=`$PHP7 $iphp_path/appServer.php`
 	if [ ! -z "$out" ];then
 		echo -e "Start appServer $ok"
 	else

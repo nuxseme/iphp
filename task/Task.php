@@ -8,6 +8,6 @@
 namespace Task;
 class Task{
 	public static function run($data){
-		exec('echo hello task >> /home/www/iphp/log/task.log');
+		exec("echo `date +'%m-%d %H:%M:%S'` hello task >> ".FRAME_PATH."/log/task.log");
 	}
 }

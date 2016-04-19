@@ -65,3 +65,52 @@ Lib\HttpServer::onRequest
 [2016-04-18 01:32:21 @10420.0]	WARNING	swServer_signal_hanlder: Fatal Error: manager process exit. status=0, signal=15.
 [2016-04-18 01:32:21 @10420.0]	ERROR	swFactoryProcess_shutdown(:62): waitpid(10422) failed. Error: No child processes[10].
 Lib\Error::shutdown
+Lib\HttpServer::onRequest
+Lib\HttpServer::onRequest
+Lib\HttpServer::onRequest
+Lib\HttpServer::onRequest
+Lib\HttpServer::onRequest
+Lib\HttpServer::onRequest
+Lib\HttpServer::onRequest
+Lib\HttpServer::onRequest
+[2016-04-19 19:39:49 @72300.0]	WARNING	swSocket_listen: bind(127.0.0.1:9876) failed. Error: Address already in use [48]
+[2016-04-19 19:39:49 @72300.0]	WARNING	swServer_start_proxy: ReactorThread start failed
+[2016-04-19 19:39:49 @72300.0]	NOTICE	Server is shutdown now.
+[2016-04-19 19:39:49 @72300.0]	WARNING	swServer_signal_hanlder: Fatal Error: manager process exit. status=0, signal=15.
+[2016-04-19 19:39:49 @72300.0]	ERROR	swFactoryProcess_shutdown(:62): waitpid(72301) failed. Error: No child processes[10].
+[2016-04-19 19:42:02 @83256.0]	WARNING	swSocket_listen: bind(127.0.0.1:9876) failed. Error: Address already in use [48]
+[2016-04-19 19:42:02 @83256.0]	WARNING	swServer_start_proxy: ReactorThread start failed
+[2016-04-19 19:42:02 @83256.0]	NOTICE	Server is shutdown now.
+[2016-04-19 19:42:02 @83256.0]	WARNING	swServer_signal_hanlder: Fatal Error: manager process exit. status=0, signal=15.
+[2016-04-19 19:42:02 @83256.0]	ERROR	swFactoryProcess_shutdown(:62): waitpid(83264) failed. Error: No child processes[10].
+[2016-04-19 19:43:15 @89208.0]	WARNING	swSocket_listen: bind(127.0.0.1:9876) failed. Error: Address already in use [48]
+[2016-04-19 19:43:15 @89208.0]	WARNING	swServer_start_proxy: ReactorThread start failed
+[2016-04-19 19:43:15 @89208.0]	NOTICE	Server is shutdown now.
+[2016-04-19 19:43:15 @89208.0]	WARNING	swServer_signal_hanlder: Fatal Error: manager process exit. status=0, signal=15.
+[2016-04-19 19:43:15 @89208.0]	ERROR	swFactoryProcess_shutdown(:62): waitpid(89209) failed. Error: No child processes[10].
+[2016-04-19 19:45:55 @2589.0]	WARNING	swSocket_listen: bind(127.0.0.1:9876) failed. Error: Address already in use [48]
+[2016-04-19 19:45:55 @2589.0]	WARNING	swServer_start_proxy: ReactorThread start failed
+[2016-04-19 19:45:55 @2589.0]	NOTICE	Server is shutdown now.
+[2016-04-19 19:45:55 @2589.0]	WARNING	swServer_signal_hanlder: Fatal Error: manager process exit. status=0, signal=15.
+[2016-04-19 19:45:55 @2589.0]	ERROR	swFactoryProcess_shutdown(:62): waitpid(2590) failed. Error: No child processes[10].
+[2016-04-19 19:46:00 ^777.2]	WARNING	zm_deactivate_swoole: Fatal error: Uncaught Error: Class '\task\Task' not found in /Users/hyd/work/iphp/lib/HttpServer.php:198
+Stack trace:
+#0 [internal function]: Lib\HttpServer->onTask(Object(swoole_http_server), 0, 1, Array)
+#1 /Users/hyd/work/iphp/lib/HttpServer.php(47): swoole_http_server->start()
+#2 /Users/hyd/work/iphp/appServer.php(117): Lib\HttpServer->run()
+#3 {main}
+  thrown in /Users/hyd/work/iphp/lib/HttpServer.php on line 198.
+[2016-04-19 19:46:00 $779.0]	WARNING	swManager_check_exit_status: worker#2 abnormal exit, status=255, signal=0
+[2016-04-19 19:46:00 ^777.3]	WARNING	zm_deactivate_swoole: Fatal error: Uncaught Error: Class '\task\Task' not found in /Users/hyd/work/iphp/lib/HttpServer.php:198
+Stack trace:
+#0 [internal function]: Lib\HttpServer->onTask(Object(swoole_http_server), 1, 1, Array)
+#1 /Users/hyd/work/iphp/lib/HttpServer.php(47): swoole_http_server->start()
+#2 /Users/hyd/work/iphp/appServer.php(117): Lib\HttpServer->run()
+#3 {main}
+  thrown in /Users/hyd/work/iphp/lib/HttpServer.php on line 198.
+[2016-04-19 19:46:00 $779.0]	WARNING	swManager_check_exit_status: worker#3 abnormal exit, status=255, signal=0
+[2016-04-19 19:48:38 @15880.0]	WARNING	swSocket_listen: bind(127.0.0.1:9876) failed. Error: Address already in use [48]
+[2016-04-19 19:48:38 @15880.0]	WARNING	swServer_start_proxy: ReactorThread start failed
+[2016-04-19 19:48:38 @15880.0]	NOTICE	Server is shutdown now.
+[2016-04-19 19:48:38 @15880.0]	WARNING	swServer_signal_hanlder: Fatal Error: manager process exit. status=0, signal=15.
+[2016-04-19 19:48:38 @15880.0]	ERROR	swFactoryProcess_shutdown(:62): waitpid(15881) failed. Error: No child processes[10].
