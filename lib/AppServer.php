@@ -28,7 +28,7 @@ class AppServer extends HttpServer{
 		echo __METHOD__.PHP_EOL;
 		echo '²âÊÔob_get_clean()';
 		echo 'add_task';
-		//add_task('task',['data'=>123]);
+		add_task('task',['data'=>123]);
 		//$respData = ob_get_clean();
 		$respData = 'helloworld';
 		$this->response($respData);
@@ -42,6 +42,7 @@ class AppServer extends HttpServer{
         Loader::setRootNS('Cron',CRON_PATH);
         Loader::setRootNS('AppMod',APP_PATH.'Mod/');
         Loader::setRootNS('Plugin',APP_PATH.'Plugin/');*/
+        Loader::setRootNS('Task',FRAME_PATH.'task/');
 	}
 	
 
