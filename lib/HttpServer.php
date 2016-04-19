@@ -9,7 +9,7 @@ namespace Lib;
 class HttpServer{
     public $config;
 	public $_onRequest;//HttpServer转交给AppServer的回调函数
-	public $http_server;
+	public $http_server;//保存实例化的swoole
 	public $rs;//响应句柄
 	public function __construct($config){
         $this->config = $config;
@@ -21,11 +21,11 @@ class HttpServer{
 
 		$swcfg = [
                 'log_file' => FRAME_PATH.'/log/httpServer.log',
-                'worker_num' => 2,
+                'worker_num' => 1,
                 'max_request' => 100000,
                 'max_conn' => 256,
-                'daemonize' => 0,//是否退化为守护进程
-                'task_worker_num'=>4//工作进程数
+                'daemonize' => 1,//是否退化为守护进程
+                'task_worker_num'=>1//工作进程数
             ];
 
         $server = new \swoole_http_server(val($this->config,'host'), val($this->config,'port'));
@@ -47,6 +47,7 @@ class HttpServer{
         $server->start();
 	}
 	
+
     /**
     * 主进程启动时回调函数
     * @access public
@@ -54,7 +55,30 @@ class HttpServer{
     * @return void
     */
     public function onMasterStart($serv){
-        //$this->log(SERVER_NAME."[#master] start");
+       // $this->log(SERVER_NAME."[#master] start");
+       exec("echo `date +'%m-%d %H:%M%:%S'` masterstart >> ".FRAME_PATH."log/process.log");
+    }
+
+    /**
+    * 更改进程名称
+    * @access public
+    * @param string $name
+    * @return void
+    */
+    public function setProcessName($name){
+        swoole_set_process_name($name);
+    }
+
+
+    /**
+    * 管理进程结束时回调函数
+    * @access public
+    * @param \swoole_server $serv
+    * @return void
+    */
+    public function onManagerStop($serv){
+        //$this->log(SERVER_NAME."[#manager] stop");
+         exec("echo `date +'%m-%d %H:%M%:%S'` onManagerStop >>".FRAME_PATH."log/process.log");
     }
 
     /**
@@ -68,15 +92,7 @@ class HttpServer{
         $this->setProcessName('php-manager:  ('.$config_file.')');
         //$this->log(SERVER_NAME."[#manager] start");
     }
-     /**
-    * 管理进程结束时回调函数
-    * @access public
-    * @param \swoole_server $serv
-    * @return void
-    */
-    public function onManagerStop($serv){
-        //$this->log(SERVER_NAME."[#manager] stop");
-    }
+    
 
     /**
     * 服务器关闭时回调函数
@@ -212,7 +228,9 @@ class HttpServer{
     * @return void
     */
     public function onFinish($serv, $task_id, $data){
-        echo 'task data:'.$data;
+        //echo 'task data:'.$data;
+        $path = FRAME_PATH;
+        exec("echo task end  >> ".FRAME_PATH."log/task.log");
     }
 
 }

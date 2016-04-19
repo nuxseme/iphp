@@ -39,7 +39,7 @@ class AppServer extends HttpServer{
         Loader::setRootNS('Cron',CRON_PATH);
         Loader::setRootNS('AppMod',APP_PATH.'Mod/');
         Loader::setRootNS('Plugin',APP_PATH.'Plugin/');*/
-        Loader::setRootNS('Task',FRAME_PATH.'/task/');
+        Loader::setRootNS('Task',FRAME_PATH.'task/');
 	}
 	
 
