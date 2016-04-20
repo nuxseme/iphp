@@ -32,9 +32,9 @@ class HttpServer{
         $this->http_server = $server;
         $server->set($swcfg);
         //$this->config = array_merge($this->config,$server->setting);
-         //$server->on('Start',array($this,'onStart'));
-         //$server->on('ManagerStart', array($this,'onManagerStart'));
-         //$server->on('ManagerStop', array($this,'onManagerStop'));
+         $server->on('Start',array($this,'onStart'));
+         $server->on('ManagerStart', array($this,'onManagerStart'));
+         $server->on('ManagerStop', array($this,'onManagerStop'));
          //$server->on('WorkerStart',array($this,'onWorkerStart'));
          $server->on('Request', array($this, 'onRequest'));
         // $server->on('Close', array($this, 'onClose'));
