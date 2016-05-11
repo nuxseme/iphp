@@ -54,6 +54,7 @@ start(){
 stop(){
 	echo -e "Stopping \c"
 	pids=`$0 list |awk '{print $1}'` 
+	echo $pids
 	while [ ! -z "$pids" ] ; do			
 		echo  -e ".\c"
 		kill -9 $pids
@@ -76,7 +77,7 @@ status(){
 	fi
 }
 list(){
-	ps aux|grep appServer|grep -v grep |awk '{print $2" "$12}'
+	ps aux|grep iphp|grep -v grep |awk '{print $2" "$12}'
 }
 restart(){
     $0 stop 

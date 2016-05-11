@@ -2,7 +2,7 @@
 /**
 * @author coco
 * @date 2016-04-14 11:26:34
-* @todo 
+* @todo 框架服务器
 */
 
 namespace Lib;
@@ -18,47 +18,29 @@ class HttpServer{
 
 	public function run(){
 		echo __METHOD__.PHP_EOL;
-
-		$swcfg = [
-                'log_file' => FRAME_PATH.'/log/httpServer.log',
-                'worker_num' => 1,
+		$swcfg = array_merge($this->config,[
+                'log_file' => FRAME_PATH.'log/httpServer.log',
                 'max_request' => 100000,
                 'max_conn' => 256,
-                'daemonize' => 1,//是否退化为守护进程
-                'task_worker_num'=>1//工作进程数
-            ];
-
+                'daemonize' => 0,//是否退化为守护进程
+            ]);
         $server = new \swoole_http_server(val($this->config,'host'), val($this->config,'port'));
         $this->http_server = $server;
-        $server->set($swcfg);
-        //$this->config = array_merge($this->config,$server->setting);
-         $server->on('Start',array($this,'onStart'));
-         $server->on('ManagerStart', array($this,'onManagerStart'));
-         $server->on('ManagerStop', array($this,'onManagerStop'));
-         //$server->on('WorkerStart',array($this,'onWorkerStart'));
-         $server->on('Request', array($this, 'onRequest'));
+        $server->set($swcfg); //设定swoole扩展的配置
+         $server->on('Start',array($this,'onStart')); // 主进程开始 master 监听请求 转发至管理进程
+         $server->on('ManagerStart', array($this,'onManagerStart')); //管理进程开始 manager 维护工作进程 安排工作,投递任务
+         $server->on('ManagerStop', array($this,'onManagerStop')); 
+         $server->on('WorkerStart',array($this,'onWorkerStart'));//工作任务进程 work||task 开始
+         $server->on('Request', array($this, 'onRequest')); // 处理请求
         // $server->on('Close', array($this, 'onClose'));
         // $server->on('Shutdown', array($this, 'onShutdown'));
-         $server->on('Task', array($this, 'onTask'));
-         $server->on('Finish', array($this, 'onFinish'));
+         $server->on('Task', array($this, 'onTask'));//任务调度
+         $server->on('Finish', array($this, 'onFinish'));//任务结束
         // $server->on('WorkerStop',[$this,'onWorkerStop']);
         // $server->on('WorkerError',[$this,'onWorkerError']);
         // $server->on('Timeout',[$this,'onTimeout']);
         $server->start();
 	}
-	
-
-    /**
-    * 主进程启动时回调函数
-    * @access public
-    * @param \swoole_server $serv
-    * @return void
-    */
-    public function onMasterStart($serv){
-       // $this->log(SERVER_NAME."[#master] start");
-       exec("echo `date +'%m-%d %H:%M%:%S'` masterstart >> ".FRAME_PATH."log/process.log");
-    }
-
     /**
     * 更改进程名称
     * @access public
@@ -68,7 +50,6 @@ class HttpServer{
     public function setProcessName($name){
         swoole_set_process_name($name);
     }
-
 
     /**
     * 管理进程结束时回调函数
@@ -82,17 +63,38 @@ class HttpServer{
     }
 
     /**
-    * 管理进程启动时回调函数
+    * 管理进程启动时回调函数 设定管理work||task进程的进程的名称
     * @access public
     * @param \swoole_server $serv
     * @return void
     */
     public function onManagerStart($serv){
         global $config_file;
-        $this->setProcessName('php-manager:  ('.$config_file.')');
+        $this->setProcessName('iphp-manager:('.$config_file.')');
+       exec("echo `date +'%m-%d %H:%M%:%S'` ManagerStart >> ".FRAME_PATH."log/process.log");
         //$this->log(SERVER_NAME."[#manager] start");
     }
     
+     /**
+    * work进程启动时回调函数 设定work||task进程的名称
+    * @access public
+    * @param \swoole_server $server
+    * @param int $worker_id
+    * @return void
+    */
+    public function onWorkerStart($server,$worker_id){
+        //$this->loadPlugin();
+        exec("echo `date +'%m-%d %H:%M%:%S'` WorkerStart >> ".FRAME_PATH."log/process.log");
+        if ($worker_id >= val($this->config,'worker_num')){
+            $this->setProcessName('iphp-task:#'.$worker_id);
+            //$this->log("php-task[#{$worker_id}] running on ".$this->c('server.host').":".$this->c('server.port'));
+        }else{
+            $this->setProcessName('iphp-worker:#'.$worker_id);
+            //$this->log("php-worker[#{$worker_id}] running on ".$this->c('server.host').":".$this->c('server.port'));
+            //apply_action('on_worker_start',$server,$worker_id);
+        }
+    }
+
 
     /**
     * 服务器关闭时回调函数
@@ -107,13 +109,14 @@ class HttpServer{
     }
 
     /**
-    * 服务器启动时回调函数
+    * 服务器启动时回调函数 在主进程开始之前设置主进程的名称
     * @access public
     * @param \swoole_server $serv
     * @return void
     */
     public function onStart($serv){
-        $this->setProcessName('php-master:  host=' . $this->config['host'] . ' port=' . $this->config['port']);
+        exec("echo `date +'%m-%d %H:%M%:%S'` start >> ".FRAME_PATH."log/process.log");
+        $this->setProcessName('iphp-master:host=' . $this->config['host'] . ' port=' . $this->config['port']);
         //apply_action('server_start',$serv);
     }
 
@@ -216,7 +219,7 @@ class HttpServer{
             //$this->log($e->getMessage());
             print_r($e);
         }
-        // $serv->finish();
+         $serv->finish('finish');
     }
 
     /**
@@ -228,9 +231,7 @@ class HttpServer{
     * @return void
     */
     public function onFinish($serv, $task_id, $data){
-        //echo 'task data:'.$data;
-        $path = FRAME_PATH;
-        exec("echo task end  >> ".FRAME_PATH."log/task.log");
+        exec("echo task endendend  >> ".FRAME_PATH."log/task.log");
     }
 
 }
