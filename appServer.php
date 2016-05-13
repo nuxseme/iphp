@@ -9,7 +9,6 @@
 //环境检测
 
 define('ENV','dev');
-
 //取得应用
 if(ENV==='pro' && isset($argv[1]) && empty($app_name = $argv[1])) {
     exit("Usage: appServer.php app_name" . PHP_EOL);
@@ -34,17 +33,35 @@ if (version_compare(SWOOLE_VERSION, '1.7.16', '<')) {
 if (!function_exists('exec')) {
     exit("HttpServer must enable exec " . PHP_EOL);
 }
-
-
-
-
+$app_name = 'pandora';
+//加载应用配置
+$config_file=__DIR__.'/config/'.$app_name.'.ini';
+if(is_file($config_file))
+	$app_config=parse_ini_file($config_file,true);
+print_r($app_config);
 //定义环境变量
 define('FRAME_PATH', __DIR__.'/');
+//框架函数目录
 define('FUNCTION_PATH', __DIR__.'/function/');
+//框架库文件目录
 define('LIB_PATH',__DIR__.'/lib/');
+//框架初始化路径
 define('INIT_PATH', __DIR__.'/init/');
+//框架模型目录
 define('MOD_PATH',__DIR__.'/mod/');
+//框架名称
+define('SERVER_NAME','iphp');
+//服务器配置目录
 define('CONFIG_PATH', __DIR__.'/config/');
+
+// 应用名称
+define('APP_NAME',$app_name);
+// 应用目录
+define('APP_PATH',rtrim($app_config['app']['app_path'],'/').'/');
+// 模板目录
+define('TPL_PATH',APP_PATH.'Tpl/');
+// 内存文件路径
+define('SHM_PATH','/dev/shm/'.SERVER_NAME.'/'.APP_NAME.'/');
 
 //引入内部函数库
 $function_files = getFiles(FUNCTION_PATH);
@@ -103,11 +120,11 @@ function init(){
 
 //加载模块化的初始行为
 init();
-//加载配置
+
+//加载服务器配置
 $config_file=CONFIG_PATH.'server.ini';
 if(is_file($config_file))
 	$config=parse_ini_file($config_file,true);
-
 //全局挂载树
 global $php;
 $server = new Lib\AppServer($config);

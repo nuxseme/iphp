@@ -11,13 +11,13 @@ class HttpServer{
 	public $_onRequest;//HttpServer转交给AppServer的回调函数
 	public $http_server;//保存实例化的swoole
 	public $rs;//响应句柄
+    public $rq;//请求句柄
 	public function __construct($config){
         $this->config = $config;
     }
 
 
 	public function run(){
-		echo __METHOD__.PHP_EOL;
 		$swcfg = array_merge($this->config,[
                 'log_file' => FRAME_PATH.'log/httpServer.log',
                 'max_request' => 100000,
@@ -130,8 +130,10 @@ class HttpServer{
     public function onRequest(\swoole_http_request $rq,\swoole_http_response $rs){
 
     	try{
-    		echo __METHOD__.PHP_EOL;
     		$this->rs = $rs;
+            $this->rq = $rq;
+            $_SERVER = [];
+            $_SERVER = $rq->server;
     		call_user_func($this->_onRequest);
     	}catch(Exception $e){}finally{}
     }

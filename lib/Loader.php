@@ -69,6 +69,7 @@ class Loader{
 				break;
 			}
 		}
+
 		$file_path = str_replace('\\','/', $root).str_replace('\\','/', $class).'.php';
 		if(is_file($file_path)){
 			require_once($file_path);
