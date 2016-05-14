@@ -38,7 +38,6 @@ $app_name = 'pandora';
 $config_file=__DIR__.'/config/'.$app_name.'.ini';
 if(is_file($config_file))
 	$app_config=parse_ini_file($config_file,true);
-print_r($app_config);
 //定义环境变量
 define('FRAME_PATH', __DIR__.'/');
 //框架函数目录
