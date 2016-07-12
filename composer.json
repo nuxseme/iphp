@@ -1,0 +1,8 @@
+{
+    "name": "nuxseme/iphp",
+    "license": "MIT",
+    "require": {
+       "monolog/monolog": "1.0.*"       
+    }
+    
+}
