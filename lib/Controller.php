@@ -2,7 +2,7 @@
 /*
 * Action 的基类，所有Action都必须继承该类
 */
-namespace Lib;
+namespace lib;
 class Controller
 {
 	public $serv;

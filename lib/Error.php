@@ -4,7 +4,7 @@
 * @date 2016-04-14 16:59:38
 * @todo 
 */
-namespace Lib;
+namespace lib;
 class Error{
 
 	

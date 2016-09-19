@@ -4,7 +4,7 @@
 * @date 2016-04-13 15:18:49
 * @todo 
 */
-namespace Lib;
+namespace lib;
 class Loader{
 	
 	static $nsPath; //命名空间路径

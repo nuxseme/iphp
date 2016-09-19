@@ -5,7 +5,7 @@
 * @todo 应用服务器
 */
 
-namespace Lib;
+namespace lib;
 class AppServer extends HttpServer{
 
 	public $config;

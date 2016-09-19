@@ -4,7 +4,7 @@
 * @date 2016-03-09 17:33:27
 * @todo 
 */
-namespace Lib;
+namespace lib;
 class HttpClient{
     const PORT = 80;
     protected $timeout = 30;

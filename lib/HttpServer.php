@@ -5,7 +5,7 @@
 * @todo 框架服务器
 */
 
-namespace Lib;
+namespace lib;
 class HttpServer{
     public $config;
 	public $_onRequest;//HttpServer转交给AppServer的回调函数

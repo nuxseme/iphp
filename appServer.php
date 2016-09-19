@@ -121,7 +121,7 @@ function init(){
 init();
 //全局挂载树
 global $php;
-$server = new Lib\AppServer($config);
+$server = new lib\AppServer($config);
 //将应用服务器挂载到全局树上
 $php = &$server;
 //HttpServer  解析完 http请求体  appServer 接收

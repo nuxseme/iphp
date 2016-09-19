@@ -62,7 +62,7 @@ if(!is_file($index_file))
 * @todo 默认控制器
 */
 namespace Controller;
-use \Lib\Controller;
+use \lib\Controller;
 class IndexController  extends Controller
 {
 
