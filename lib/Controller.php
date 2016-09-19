@@ -3,7 +3,8 @@
 * Action 的基类，所有Action都必须继承该类
 */
 namespace Lib;
-class Action{
+class Controller
+{
 	public $serv;
 	// 模板目录
 	protected $tpl_path;

@@ -1,5 +1,5 @@
 ;ipconfig
-port=9876
+port={port}
 host=0.0.0.0
 
 ;工作进程数
@@ -7,3 +7,7 @@ worker_num=4
 
 ;异步任务进程数
 task_worker_num=4
+
+[app]
+app_name={app_name}
+app_path=/opt/work/{app_name}

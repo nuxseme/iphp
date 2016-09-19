@@ -37,7 +37,7 @@ $app_name = 'pandora';
 //加载应用配置
 $config_file=__DIR__.'/config/'.$app_name.'.ini';
 if(is_file($config_file))
-	$app_config=parse_ini_file($config_file,true);
+	$config=parse_ini_file($config_file,true);
 //定义环境变量
 define('FRAME_PATH', __DIR__.'/');
 //框架函数目录
@@ -56,7 +56,7 @@ define('CONFIG_PATH', __DIR__.'/config/');
 // 应用名称
 define('APP_NAME',$app_name);
 // 应用目录
-define('APP_PATH',rtrim($app_config['app']['app_path'],'/').'/');
+define('APP_PATH',rtrim($config['app']['app_path'],'/').'/');
 // 模板目录
 define('TPL_PATH',APP_PATH.'Tpl/');
 // 内存文件路径
@@ -119,11 +119,6 @@ function init(){
 
 //加载模块化的初始行为
 init();
-
-//加载服务器配置
-$config_file=CONFIG_PATH.'server.ini';
-if(is_file($config_file))
-	$config=parse_ini_file($config_file,true);
 //全局挂载树
 global $php;
 $server = new Lib\AppServer($config);

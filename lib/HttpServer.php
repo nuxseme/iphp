@@ -1,6 +1,6 @@
 <?php
 /**
-* @author coco
+* @author nuxse
 * @date 2016-04-14 11:26:34
 * @todo 框架服务器
 */
@@ -12,6 +12,8 @@ class HttpServer{
 	public $http_server;//保存实例化的swoole
 	public $rs;//响应句柄
     public $rq;//请求句柄
+
+    //构造函数 保存应用配置
 	public function __construct($config){
         $this->config = $config;
     }
@@ -42,7 +44,7 @@ class HttpServer{
         $server->start();
 	}
     /**
-    * 更改进程名称
+    * 更改进程名称 不适用于osx
     * @access public
     * @param string $name
     * @return void
@@ -132,7 +134,6 @@ class HttpServer{
     	try{
     		$this->rs = $rs;
             $this->rq = $rq;
-            $_SERVER = [];
             $_SERVER = $rq->server;
     		call_user_func($this->_onRequest);
     	}catch(Exception $e){}finally{}
@@ -161,7 +162,6 @@ class HttpServer{
     * @return void
     */
     public function response($respData, $code = 200){
-
     	$this->rs->write($respData);
 		$this->rs->end();
         /*if(empty($this->rs)){
