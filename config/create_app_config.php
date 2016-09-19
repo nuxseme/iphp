@@ -57,11 +57,11 @@ if(!is_file($index_file))
   $index_html = <<<eof
 <?php
 /**
-* @author coco
+* @author nuxse
 * @date 
 * @todo 默认控制器
 */
-namespace app\controller;
+namespace Controller;
 use \Lib\Controller;
 class IndexController  extends Controller
 {

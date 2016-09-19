@@ -12,21 +12,20 @@ class HttpServer{
 	public $http_server;//保存实例化的swoole
 	public $rs;//响应句柄
     public $rq;//请求句柄
-
+    public $fd;//当前连接号
     //构造函数 保存应用配置
 	public function __construct($config){
         $this->config = $config;
     }
-
-
+    //swoole http服务器运行
 	public function run(){
-		$swcfg = array_merge($this->config,[
+		$swcfg = array_merge([
                 'log_file' => FRAME_PATH.'log/httpServer.log',
                 'max_request' => 100000,
                 'max_conn' => 256,
                 'daemonize' => 0,//是否退化为守护进程
-            ]);
-        $server = new \swoole_http_server(val($this->config,'host'), val($this->config,'port'));
+            ],config($this->config,'global'));
+        $server = new \swoole_http_server(config($this->config,'server.host'), config($this->config,'server.port'));
         $this->http_server = $server;
         $server->set($swcfg); //设定swoole扩展的配置
          $server->on('Start',array($this,'onStart')); // 主进程开始 master 监听请求 转发至管理进程
@@ -65,7 +64,7 @@ class HttpServer{
     }
 
     /**
-    * 管理进程启动时回调函数 设定管理work||task进程的进程的名称
+    * 管理进程启动时回调函数 设定管理进程名称
     * @access public
     * @param \swoole_server $serv
     * @return void
@@ -87,7 +86,7 @@ class HttpServer{
     public function onWorkerStart($server,$worker_id){
         //$this->loadPlugin();
         exec("echo `date +'%m-%d %H:%M%:%S'` WorkerStart >> ".FRAME_PATH."log/process.log");
-        if ($worker_id >= val($this->config,'worker_num')){
+        if ($worker_id >= config($this->config,'global.work_num')){
             $this->setProcessName('iphp-task:#'.$worker_id);
             //$this->log("php-task[#{$worker_id}] running on ".$this->c('server.host').":".$this->c('server.port'));
         }else{
@@ -118,7 +117,7 @@ class HttpServer{
     */
     public function onStart($serv){
         exec("echo `date +'%m-%d %H:%M%:%S'` start >> ".FRAME_PATH."log/process.log");
-        $this->setProcessName('iphp-master:host=' . $this->config['host'] . ' port=' . $this->config['port']);
+        $this->setProcessName('iphp-master:host=' . config($this->config,'server.host') . ' port=' . config($this->config,'server.port'));
         //apply_action('server_start',$serv);
     }
 
@@ -134,6 +133,7 @@ class HttpServer{
     	try{
     		$this->rs = $rs;
             $this->rq = $rq;
+            $this->fd = $rq->fd;
             $_SERVER = $rq->server;
     		call_user_func($this->_onRequest);
     	}catch(Exception $e){}finally{}
@@ -162,19 +162,18 @@ class HttpServer{
     * @return void
     */
     public function response($respData, $code = 200){
-    	$this->rs->write($respData);
-		$this->rs->end();
-        /*if(empty($this->rs)){
+        //没有响应句柄 
+        if(empty($this->rs)){
             return false;
         }
-        $connection_info = $this->serv->connection_info($this->fd);
+        $connection_info = $this->http_server->connection_info($this->fd);
         if($connection_info==false){
             return false;
         }
         try{
-            $this->c('gzip_level') && $this->rs->gzip($this->c('gzip_level'));
+            $gzip_level = config($this->config,'global.gzip_level') && $this->rs->gzip($gzip_level);
             $this->rs->status($code);
-            $this->c('server.keepalive') && $this->setHeader('Connection','keep-alive');
+            config($this->config,'server.keepalive') && $this->setHeader('Connection','keep-alive');
             $strlen = strlen($respData);
             if($strlen > 1024*1024*2){
                 $this->setHeader('Content-Length',$strlen);
@@ -194,7 +193,7 @@ class HttpServer{
             return true;
         }finally{
             $this->rs = null;
-        }*/
+        }
         return true;
     }
 
@@ -234,6 +233,32 @@ class HttpServer{
     */
     public function onFinish($serv, $task_id, $data){
         exec("echo task endendend  >> ".FRAME_PATH."log/task.log");
+    }
+
+
+    /**
+    * 设置发送内容头部
+    * @access public
+    * @param string $key
+    * @param string $value
+    * @return void
+    */
+    public function setHeader($key, $value){
+        $this->rs->header($key,$value);
+    }
+
+      /**
+    * 设置发送内容的cookie
+    * @access public
+    * @param string $name
+    * @param string $value
+    * @param int $expires
+    * @param string $path
+    * @param string $domain
+    * @return void
+    */
+    public function setCookie($name,$value,$expires=0,$path='/',$domain='',$secure = false,$httponly = false){
+        $this->rs->cookie($name,$value,$expires ? time()+$expires : 0,$path,$domain,$secure,$httponly);
     }
 
 }

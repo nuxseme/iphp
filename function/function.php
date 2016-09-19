@@ -52,3 +52,14 @@ function  getExt(){
 	$path_info = explode('.',$path_info);
 	return val($path_info,1);
 }
+
+//获取 配置项
+function config($config,$key)
+{
+	$key = explode('.',$key);
+    $val = isset($config[$key[0]]) ? $config[$key[0]] : '';
+    if(isset($key[1])){
+        isset($val[$key[1]]) && ($val = $val[$key[1]]) || ($val = '');
+    }
+    return $val;
+}
