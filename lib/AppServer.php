@@ -13,9 +13,6 @@ class AppServer extends HttpServer{
 	public function __construct($config){
 		$this->config = $config;
 		parent::__construct($config);
-        set_error_handler(array(new Error(),'error'), E_ALL);
-        set_exception_handler(array(new Error(),'exception'));
-        register_shutdown_function(array(new Error(),'shutdown'));
 		$this->setRootNS();
 	}
 

@@ -1,46 +1,78 @@
 <?php
 /**
-* @author coco
+* @author nuxse
 * @date 2016-04-14 16:59:38
 * @todo 
 */
 namespace lib;
-class Error{
+class Error {
 
-	
-	public function  error($errno, $errstr, $errfile, $errline){
-		$err_data = [
+	/**
+	 * [error 自定义错误处理]
+	 * @param  [type] $error_level   [错误级别]
+	 * @param  [type] $error_message [错误信息]
+	 * @param  [type] $error_file    [错误文件]
+	 * @param  [type] $error_line    [错误行号]
+	 * @param  [type] $error_context [错误上下文]
+	 * @return [type]                [description]
+	 */
+	public function  error($error_level,$error_message,$error_file,$error_line,$error_context)
+	{
+		$error_data = [
 
-			'errno'=> $errno,
-			'errstr'=> $errstr,
-			'errfile'=> $errfile,
-			'errline'=> $errline,
+			'error_level'=> $error_level,
+			'error_message'=> $error_message,
+			'error_file'=> $error_file,
+			'error_line'=> $error_line,
+			'error_context' => $error_context
 		];
+		switch ($error_level) {  
 
-		switch ($errno) {  
-	    case E_USER_ERROR:  
+			case E_WARNING:
+				echo '[ERROR_LEVLE] : SYSTEM E_WARNING'.PHP_EOL;
+				echo "[ERROR_MESSAGE] : $error_message".PHP_EOL;
+				echo "[ERROR_LINE] : $error_line".PHP_EOL;
+				echo "[ERROR_FILE] : $error_file".PHP_EOL;
+				break;
+
+			case E_NOTICE:
+				echo '[ERROR_LEVLE] : SYSTEM E_NOTICE'.PHP_EOL;
+				echo "[ERROR_MESSAGE] : $error_message".PHP_EOL;
+				echo "[ERROR_LINE] : $error_line".PHP_EOL;
+				echo "[ERROR_FILE] : $error_file".PHP_EOL;
+				break;
+				
+	    	case E_USER_ERROR:  
+		     	echo '[ERROR_LEVLE] : SYSTEM E_USER_ERROR'.PHP_EOL;
+				echo "[ERROR_MESSAGE] : $error_message".PHP_EOL;
+				echo "[ERROR_LINE] : $error_line".PHP_EOL;
+				echo "[ERROR_FILE] : $error_file".PHP_EOL;
+				exit();
 	  
-	     echo "<b>My ERROR</b> [$errno] $errstr<br />\n";  
-	        echo "  Fatal error on line $errline in file $errfile";  
-	        echo ", PHP " . PHP_VERSION . " (" . PHP_OS . ")<br />\n";  
-	        echo "Aborting...<br />\n";  
-	        exit(1);  
-	        break;  
+	    	case E_USER_WARNING:  
+	        	echo '[ERROR_LEVLE] : SYSTEM E_USER_WARNING'.PHP_EOL;
+				echo "[ERROR_MESSAGE] : $error_message".PHP_EOL;
+				echo "[ERROR_LINE] : $error_line".PHP_EOL;
+				echo "[ERROR_FILE] : $error_file".PHP_EOL;
+				break;
 	  
-	    case E_USER_WARNING:  
-	        echo "<b>My WARNING</b> [$errno] $errstr<br />\n";  
-	        break;  
-	  
-	    case E_USER_NOTICE:  
-	        echo "<b>My NOTICE</b> [$errno] $errstr<br />\n";  
-	        break;  
-	  
-	    default:  
-	        echo "Unknown error type: [$errno] $errstr<br />\n";  
-	        break;  
+	    	case E_USER_NOTICE:  
+	       		echo '[ERROR_LEVLE] : SYSTEM E_USER_NOTICE'.PHP_EOL;
+				echo "[ERROR_MESSAGE] : $error_message".PHP_EOL;
+				echo "[ERROR_LINE] : $error_line".PHP_EOL;
+				echo "[ERROR_FILE] : $error_file".PHP_EOL;
+				break;
+
+			case E_ALL:  
+	       		echo '[ERROR_LEVLE] : SYSTEM E_ALL'.PHP_EOL;
+				echo "[ERROR_MESSAGE] : $error_message".PHP_EOL;
+				echo "[ERROR_LINE] : $error_line".PHP_EOL;
+				echo "[ERROR_FILE] : $error_file".PHP_EOL;
+				break;
 	    }  
-	  
-	    /* Don't execute PHP internal error handler */  
+	    /**
+	     * 系统错误溯源函数
+	     */
 	    //debug_print_backtrace();
 	    //print_r(deubug_backtrace());
 	    return true;  

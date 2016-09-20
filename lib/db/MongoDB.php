@@ -1,7 +1,7 @@
 <?php
 namespace lib\db;
 
-class Mongodb
+class MongoDB  implements lib\DB
 {
 
 	public function __construct()
@@ -9,6 +9,9 @@ class Mongodb
 
 	}
 
-
+	public function select()
+	{
+		
+	}
 	
 }

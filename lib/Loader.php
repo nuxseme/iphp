@@ -1,6 +1,6 @@
 <?php
 /**
-* @author coco
+* @author nuxse
 * @date 2016-04-13 15:18:49
 * @todo 
 */
@@ -29,7 +29,7 @@ class Loader{
 	 */
 	static function loadModel($model_name='',$prefix=''){
 		if(empty($model_name)){
-			return new \Lib\Model;
+			return new \lib\Model;
 		}
 		$mod_key = $model_name;
 		if(isset(self::$_objects['model'][$mod_key])){
