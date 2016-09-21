@@ -3,6 +3,7 @@ namespace lib\db;
 
 interface DB
 {
+	
 	public function insert();
 	public function multiInsert();
 	public function delete();

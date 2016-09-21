@@ -120,11 +120,10 @@ function init(){
 //加载模块化的初始行为
 init();
 //全局挂载树
-global $php;
-$server = new lib\AppServer($config);
+global $appServer;
+$appServer = new lib\AppServer($config);
 //将应用服务器挂载到全局树上
-$php = &$server;
 //HttpServer  解析完 http请求体  appServer 接收
-$server->setProcReqFun([$server,'start']);
-$server->run();
+$appServer->setProcReqFun([$appServer,'start']);
+$appServer->run();
 

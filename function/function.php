@@ -63,3 +63,19 @@ function config($config,$key)
     }
     return $val;
 }
+
+//mongodb
+function  mongodb($collection = 'debug')
+{
+	static $mongodbs = [];
+	global $appServer;
+	print_r($appServer);
+	return $appServer->mongodb;
+
+	$key = md5($collection);
+	if(!isset($mongodbs[$key])){
+		$mongodbs[$key] = clone $appServer->mongodb;
+		$mongodbs[$key]->setCollection($collection);
+	}
+	return $mongodbs[$key];
+}

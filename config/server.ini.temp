@@ -111,5 +111,13 @@ host=0.0.0.0
 
 
 [app]
+;应用名称
 app_name={app_name}
+;应用路径
 app_path=/opt/work/{app_name}
+
+[mongodb]
+host = 127.0.0.1:27017
+db = {app_name}
+
+

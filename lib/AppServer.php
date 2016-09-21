@@ -10,12 +10,24 @@ class AppServer extends HttpServer{
 
 	public $config;
 	public static $ext = ['ico','html','jpg'];
+	public static $auto_load = ['mongodb'];
 	public function __construct($config){
 		$this->config = $config;
 		parent::__construct($config);
 		$this->setRootNS();
 	}
 
+	public function __get($name){
+		echo $name;
+		return ;
+        if(empty($this->$name) && in_array($name,self::$auto_load)){
+            $class = '\lib\db'.ucwords($name);
+            $this->$name = new $class(isset($this->config[$name]) ? $this->config[$name]: []);
+        }else{
+            $this->$name = null;
+        }
+        return $this->$name;
+    }
 
 	public function start(){
 		ob_start();
