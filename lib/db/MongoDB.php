@@ -1,7 +1,7 @@
 <?php
 namespace lib\db;
 
-class Mongodb implements lib\DB
+class Mongodb implements db
 {
 	private $config;	//配置
 	private $link; 		//当前链接
@@ -22,7 +22,7 @@ class Mongodb implements lib\DB
 		try{
 			//依赖老版本的mongo-php-driver 
 			//新的mongodb-php-driver 需要重写
-			$this->link = new MongoClient($config['host']);
+			$this->link = new \MongoClient($config['host']);
 			$this->db = $this->link->$config['db'];
 		}catch(\Exception $e){
 			$this->error = $e->getMessage();
@@ -69,9 +69,18 @@ class Mongodb implements lib\DB
 	// 	}
 	// }
 	
-	public function select()
-	{
-		
+	public function insert($data){
+
+		$insert_result = $this->db->collectionName->insert(["title" => "MongoDB", 
+	"description" => "database", 
+	"likes" => 100,
+	"url" => "http://www.runoob.com/mongodb/",
+	"by", "菜鸟教程"]);
+		print_r($insert_result);
 	}
+	public function multiInsert(){}
+	public function delete(){}
+	public function select(){}
+	public function update(){}
 	
 }

@@ -1,10 +1,10 @@
 <?php
 namespace lib\db;
 
-interface DB
+interface db
 {
 	
-	public function insert();
+	public function insert($data);
 	public function multiInsert();
 	public function delete();
 	public function select();
