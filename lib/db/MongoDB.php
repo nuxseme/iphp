@@ -125,9 +125,6 @@ class Mongodb implements db
 	}
 
 
-
-
-
 	//列出数据库
 	//返回数据格式
 	//[
@@ -147,6 +144,11 @@ class Mongodb implements db
 	{
 		//在当前的连接下显示数据库
 		return  $this->link->listDBs();
+	}
+
+	//获取错误信息
+	public function getError(){
+		return $this->error;
 	}
 
 
