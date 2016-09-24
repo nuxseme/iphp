@@ -96,12 +96,77 @@ class Mongodb implements db
 	//成功返回数组Array ( [ok] => 1 [n] => 0 [err] => [errmsg] => )
 	//希望成功返回_id
 	public function insert($data){
-
-		$insert_result = $this->collection->insert($data);
-	    return $insert_result;
+		try{
+		 	$this->collection->insert($data);
+		 	return $data['_id'];
+		}catch(\MongoCursorException $e){
+			$this->error = $e->getMessage();
+			return false;
+		}
 	}
 
+	//删除文档  这里不能指定_id 只能删除文档中的key 未设定justOne选项
+	public function delete($where)
+	{
+		try{
+			return $this->collection->remove($where);
+		}catch(\MongoCursorException $e){
+			$this->error = $e->getMessage();
+			return false;
+		}
+	}
+
+	//返回查询数组 未执行limit sort order操作
+	public function select($where)
+	{
+		try{
+			$collections = $this->collection->find($where);
+			foreach ($collections as $value) {
+				$result[] = $value;
+			}
+			unset($collections);
+			return $result;
+		}catch (Exception $e) {
+			$this->error = $e->getMessage();
+			return false;
+		}
+	}
+
+	//获取最先匹配的文档
+	public function fetch($where){
+		try{
+			return $this->collection->findOne($where);
+		}catch (Exception $e) {
+			$this->error = $e->getMessage();
+			return false;
+		}
+	}
 	
+	//Array ( [ok] => 1 [nModified] => 0 [n] => 0 [err] => [errmsg] => [updatedExisting] => )
+	//修改单条
+	//多条设定multi:true
+	public function update($where,$data,$options)
+	{
+		try{
+			return $this->collection->update($where,['$set'=>$data],$options);
+		}catch (Exception $e) {
+			$this->error = $e->getMessage();
+			return false;
+		}
+		
+	}
+
+	//保存
+	public function save($data)
+	{
+		try{
+			return $this->collection->save($data);
+		}catch (Exception $e) {
+			$this->error = $e->getMessage();
+			return false;
+		}
+	}
+
 	//获取数据库下所有集合的对象
 	//返回的结果是一个包含集合句柄的数组
 	//Array ( [0] => MongoCollection Object ( [w] => 1 [wtimeout] => 10000 ) [1] => MongoCollection Object ( [w] => 1 [wtimeout] => 10000 ) )
@@ -154,8 +219,5 @@ class Mongodb implements db
 
 
 	public function multiInsert(){}
-	public function delete(){}
-	public function select(){}
-	public function update(){}
 	
 }

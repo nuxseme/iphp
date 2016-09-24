@@ -6,7 +6,7 @@ interface db
 	
 	public function insert($data);
 	public function multiInsert();
-	public function delete();
-	public function select();
-	public function update();
+	public function delete($where);
+	public function select($where);
+	public function update($where,$data);
 }
