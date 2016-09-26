@@ -25,7 +25,7 @@ function val(&$obj,$key,$default=''){
 
 //获取当前请求的控制器名称
 function getAct(){
-	$path_info = trim(val($_SERVER,'path_info'),'/');
+	$path_info = trim(val($_SERVER,'PATH_INFO'),'/');
 	if(empty($path_info)){
 		return 'index';
 	}else{
@@ -37,7 +37,7 @@ function getAct(){
 //获取当前请求的方法名称
 function getMethod(){
 
-	$path_info = trim(val($_SERVER,'path_info'),'/');
+	$path_info = trim(val($_SERVER,'PATH_INFO'),'/');
 	if(empty($path_info)){
 		return 'index';
 	}else{
@@ -48,7 +48,7 @@ function getMethod(){
 
 //获取当期请求的后缀
 function  getExt(){
-	$path_info = trim(val($_SERVER,'path_info'),'/');
+	$path_info = trim(val($_SERVER,'PATH_INFO'),'/');
 	$path_info = explode('.',$path_info);
 	return val($path_info,1);
 }
@@ -174,7 +174,8 @@ function cur_url(){
     }
     $query_str = val($_SERVER,'QUERY_STRING');
     $query_str && $query_str = '?'.$query_str;
-    $url = $sch.val($_SERVER,'HTTP_HOST','unknown host').val($_SERVER,'REQUEST_URI').$query_str;
+    //$url = $sch.val($_SERVER,'HTTP_HOST','unknown host').val($_SERVER,'REQUEST_URI').$query_str;
+    $url ='http://iphp.nuxse.com/mongo'.val($_SERVER,'REQUEST_URI').$query_str;
     return $url;
   }
   return '';

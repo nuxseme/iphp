@@ -35,7 +35,7 @@ class AppServer extends HttpServer{
 		$act_class = '\\Controller\\'.$action.'Controller';
         if(!$ext){
         	$act_obj = new $act_class($this,$method);
-	        //print_r($act_obj);
+	        //print_r($act_obj);exit();
 	        $data = $act_obj->$method();
 	        //print_r($data);
         }

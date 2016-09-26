@@ -138,7 +138,7 @@ class Mongodb implements db
 			return $this->collection->findOne($where);
 		}catch (Exception $e) {
 			$this->error = $e->getMessage();
-			return false;
+			return $e->getMessage();
 		}
 	}
 	

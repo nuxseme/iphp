@@ -129,7 +129,10 @@ class HttpServer{
     * @return void
     */
     public function onRequest(\swoole_http_request $rq,\swoole_http_response $rs){
-
+        // $connection_info = $this->http_server->connection_info($rq->fd);
+        // if($connection_info==false){
+        //     return false;
+        // }
     	try{
     		$this->rs = $rs;
             $this->rq = $rq;
@@ -139,6 +142,30 @@ class HttpServer{
             isset($rq->files) && $_FILES = $rq->files;
             isset($rq->get) && $_GET = $rq->get;
             isset($rq->post) && $_POST = $rq->post;
+            if($this->isMulFormData(val($rq,'header')) && $this->isArrayPost($_POST)){
+                $_POST = $this->post2Array($_POST);
+            }
+            $_REQUEST = array_merge($_GET,$_POST);
+            $GLOBALS['rawContent'] = '';
+            //$connection_info && 
+            $GLOBALS['rawContent'] = $rq->rawContent();
+            $header = $server = [];
+            if(isset($rq->header)){
+                foreach($rq->header as $key=>$val){
+                    $header['HTTP_'.strtoupper(str_replace('-','_',$key))] = $val;
+                }
+            }
+            if(isset($rq->server)){
+                $server = array_change_key_case($rq->server,CASE_UPPER);
+            }
+            $_SERVER = array_merge($header,$server);
+            unset($server,$header);
+            $_SERVER['REMOTE_ADDR'] = val($_SERVER,'HTTP_X_FORWARDED_FOR',$_SERVER['REMOTE_ADDR']);
+            $_SERVER['SERVER_SOFTWARE'] = SERVER_NAME;
+            if(defined('DEBUG')){
+                $query_str = val($_SERVER,'QUERY_STRING');
+                $query_str && $query_str = '?'.$query_str;
+            }
     		call_user_func($this->_onRequest);
     	}catch(Exception $e){}finally{}
     }
@@ -263,6 +290,46 @@ class HttpServer{
     */
     public function setCookie($name,$value,$expires=0,$path='/',$domain='',$secure = false,$httponly = false){
         $this->rs->cookie($name,$value,$expires ? time()+$expires : 0,$path,$domain,$secure,$httponly);
+    }
+
+    /**
+    * 检测是否表单multipart/form-data提交方式
+    * @access private
+    * @return bool
+    */
+    private function isMulFormData($header){
+        if(explode(';',val($header,'content-type',''),2)[0]=='multipart/form-data'){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+    * 当表单中有文件上传时，POST的数据不能解析name[key]的情况，需要检测，然后手工处理
+    * @access private
+    * @param array $post_data
+    * @return bool
+    */
+    private function isArrayPost($post_data){
+        foreach ($post_data as $key => $value) {
+            if(strpos($key, '[')){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+    * 当表单中有文件上传时，POST的数据不能解析name[key]的情况，需手工处理
+    * @access private
+    * @param array $post_data
+    * @return array
+    */
+    private function post2Array($post_data){
+        $data = array2query($post_data);
+        $ret = [];
+        parse_str($data,$ret);
+        return $ret;
     }
 
 }
