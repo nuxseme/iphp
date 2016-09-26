@@ -135,6 +135,10 @@ class HttpServer{
             $this->rq = $rq;
             $this->fd = $rq->fd;
             $_SERVER = $rq->server;
+            isset($rq->cookie) && $_COOKIE = $rq->cookie;
+            isset($rq->files) && $_FILES = $rq->files;
+            isset($rq->get) && $_GET = $rq->get;
+            isset($rq->post) && $_POST = $rq->post;
     		call_user_func($this->_onRequest);
     	}catch(Exception $e){}finally{}
     }

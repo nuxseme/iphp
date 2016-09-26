@@ -19,7 +19,6 @@ class Error {
 	public function  error($error_level,$error_message,$error_file,$error_line,$error_context)
 	{
 		$error_data = [
-
 			'error_level'=> $error_level,
 			'error_message'=> $error_message,
 			'error_file'=> $error_file,
@@ -70,11 +69,14 @@ class Error {
 				echo "[ERROR_FILE] : $error_file".PHP_EOL;
 				break;
 	    }  
+
 	    /**
 	     * 系统错误溯源函数
 	     */
 	    //debug_print_backtrace();
 	    //print_r(deubug_backtrace());
+	    
+	    mongodb('error')->insert($error_data);
 	    return true;  
 	}
 

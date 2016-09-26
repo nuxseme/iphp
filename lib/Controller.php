@@ -1,10 +1,8 @@
 <?php
-/*
-* Action 的基类，所有Action都必须继承该类
-*/
 namespace lib;
 class Controller
 {
+	//当前引用服务器
 	public $serv;
 	// 模板目录
 	protected $tpl_path;
@@ -24,17 +22,20 @@ class Controller
 	public $act;
 	
 	public function __construct($server,$request_method){
-		// $this->serv = $server;
-		// $this->data = [];
-		// $this->theme = isset($this->serv->config['app']['theme']) && !empty($this->serv->config['app']['theme']) ? $this->serv->config['app']['theme'] : 'default';
-		// $classed_class = explode('\\',get_called_class());
-		// array_shift($classed_class);
-		// $this->tpl_path = strtolower(join('/',$classed_class));
-		// $this->act_name = \Lib\Common::getActionUrl();
-		// $this->page_id = abs(crc32($this->act_name));
-		// $this->assign('page_id',$this->page_id);
-		// $this->request_method = $request_method;
-		// $this->act = request('act','','strip_tags,trim');
+		$this->serv = $server;
+		$this->data = [];//初始化参数池
+		//获取主题配置
+		$this->theme = isset($this->serv->config['app']['theme']) && !empty($this->serv->config['app']['theme']) ? $this->serv->config['app']['theme'] : 'default';
+		//获取当前请求的类
+		//$classed_class = explode('\\',get_called_class());
+		//array_shift($classed_class);
+		//$this->tpl_path = strtolower(join('/',$classed_class));
+		$this->tpl_path = getAct();
+		//$this->act_name = \Lib\Common::getActionUrl();
+		//$this->page_id = abs(crc32($this->act_name));
+		//$this->assign('page_id',$this->page_id);
+		$this->request_method = $request_method;
+		//$this->act = request('act','','strip_tags,trim');
 		if(method_exists($this, '_init')){
 			call_user_func(array($this,'_init'));
 		}
@@ -52,15 +53,16 @@ class Controller
 		}
 	}
 
-	protected function display($tpl_file,$data = array()){
-		if(!is_array($data)){
+	protected function display($tpl_file,$params = array()){
+		if(!is_array($params)){
 			_exit('template data must to be an arrays!');
 		}
-		//$data = array_merge($this->data,$data);
-		extract($data);
-		print_r($data);
-		include($this->tpl($tpl_file));
-		unset($data);
+		$_data = array_merge($this->data,$params);
+		extract($_data);
+		$shm_file =$this->tpl($tpl_file);
+		mongodb('tpl')->insert(['tpl' => $shm_file]);
+		include($shm_file);
+		unset($_data);
 		$this->data = [];
 	}
 
@@ -79,12 +81,10 @@ class Controller
 		}elseif($this->getTemplate()!='default' && is_file($default_shm_file)){
 			if(!defined('DEBUG')){return $default_shm_file;}
 		}
-
 		if($this->getTemplate() != 'default' && !is_file($real_tpl_file)){
 			$real_tpl_file = $default_real_tpl_file;
 			$shm_file = $default_shm_file;
 		}
-		
 		if(!is_file($shm_file) || filemtime($real_tpl_file)>filemtime($shm_file)){
 			if(!is_file($real_tpl_file)){
 				if(is_file($shm_file))
@@ -97,6 +97,7 @@ class Controller
 			}
 			copy($real_tpl_file, $shm_file);
 		}
+
 		return $shm_file;
 	}
 

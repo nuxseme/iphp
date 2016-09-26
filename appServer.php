@@ -6,11 +6,9 @@
 ##开启服务
 ## swoole以php扩展形式内置 可直接使用
 
-//环境检测
 
-define('ENV','dev');
 //取得应用
-if(ENV==='pro' && isset($argv[1]) && empty($app_name = $argv[1])) {
+if(isset($argv[1]) && empty($app_name = $argv[1])) {
     exit("Usage: appServer.php app_name" . PHP_EOL);
 }
 //PHP版本
@@ -33,11 +31,11 @@ if (version_compare(SWOOLE_VERSION, '1.7.16', '<')) {
 if (!function_exists('exec')) {
     exit("HttpServer must enable exec " . PHP_EOL);
 }
-$app_name = 'pandora';
 //加载应用配置
 $config_file=__DIR__.'/config/'.$app_name.'.ini';
 if(is_file($config_file))
 	$config=parse_ini_file($config_file,true);
+
 //定义环境变量
 define('FRAME_PATH', __DIR__.'/');
 //框架函数目录
@@ -99,6 +97,9 @@ function getFiles($path){
 	return $files_pool;
 }
 
+//定义开发环境
+$env = val($config,'env','debug');
+$env == 'debug' && define('DEBUG',1);
 /**
  * [init 初始化]
  * @return [type] [description]

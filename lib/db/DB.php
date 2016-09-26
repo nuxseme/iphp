@@ -8,5 +8,5 @@ interface db
 	public function multiInsert();
 	public function delete($where);
 	public function select($where);
-	public function update($where,$data);
+	public function update($where,$data,$options);
 }
