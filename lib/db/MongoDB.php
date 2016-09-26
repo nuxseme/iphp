@@ -117,7 +117,7 @@ class Mongodb implements db
 	}
 
 	//返回查询数组 未执行limit sort order操作
-	public function select($where)
+	public function select($where = [])
 	{
 		try{
 			$collections = $this->collection->find($where);
@@ -214,6 +214,10 @@ class Mongodb implements db
 		return  $this->link->listDBs();
 	}
 
+	public function selectDB($db){
+		$this->link->selectDB($db);
+		$this->db = $this->link->$db;
+	}
 
 
 	public function multiInsert(){}
