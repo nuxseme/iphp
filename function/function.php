@@ -180,3 +180,13 @@ function cur_url(){
   }
   return '';
 }
+
+
+/**
+* 将输入转换为绝对整数
+* @param numeric $num
+* @return Int
+*/
+function absint($num){
+  return abs(intval($num));
+}

@@ -11,8 +11,9 @@ class Mongodb implements db
 
 	private $dbName; //当前数据库名称
 	private $collectionName;//当前集合名称
-	private $error;		//错误信息
 
+	private $error;		//错误信息
+	private $options = [];	//操作
 	//mongodb  构造函数 初始化链接 
 	//在此阶段未指定操作的集合
 	public function __construct($config)
@@ -41,6 +42,7 @@ class Mongodb implements db
 	{
 		$this->collectionName = $collectionName;
 		$this->collection = $this->db->$collectionName;
+		return $this;
 	}
 
 	//魔术方法  可用于调用mongodb的方法
@@ -90,37 +92,58 @@ class Mongodb implements db
 	// 		$this->reset();
 	// 	}
 	// }
-	
 
-	//仅仅调用了mongo 内置的insert 未设置options 
-	//成功返回数组Array ( [ok] => 1 [n] => 0 [err] => [errmsg] => )
-	//希望成功返回_id
-	public function insert($data){
+	
+	/**
+	 * [insert description]
+	 * @param  [type] $data    [插入的文档]
+	 * @param  array  $options [fsync:是否异步插入，异步即不等待mongodb操作完成，直接返回数据标识_id
+	 *              			j:默认false,w,wtimeout,safe,timeout ]
+	 * @return [type]          [_id 对象]
+	 */
+	public function insert($data,$options = []){
 		try{
-		 	$this->collection->insert($data);
+		 	$this->collection->insert($data, $options);
 		 	return $data['_id'];
 		}catch(\MongoCursorException $e){
 			$this->error = $e->getMessage();
 			return false;
+		}finally{
+			$this->reset();
 		}
 	}
 
-	//删除文档  这里不能指定_id 只能删除文档中的key 未设定justOne选项
-	public function delete($where)
+	//删除文档  
+	//justOne : （可选）如果设为 true 或 1，则只删除一个文档。
+	//writeConcern :（可选）抛出异常的级别。
+	public function delete($where,$options)
 	{
 		try{
-			return $this->collection->remove($where);
+			return $this->collection->remove($where,$options);
 		}catch(\MongoCursorException $e){
 			$this->error = $e->getMessage();
 			return false;
 		}
 	}
 
-	//返回查询数组 未执行limit sort order操作
+	//返回查询数组 
 	public function select($where = [])
 	{
+		$options = $this->getOptions();
 		try{
-			$collections = $this->collection->find($where);
+			$collections = $this->collection->find($where ,$options['fields']);
+			if(!empty($options['limit']))
+			{
+				$collections->limit($options['limit']);
+			}			
+			if(!empty($options['skip']))
+			{
+				$collections->skip($options['skip']);
+			}			
+			if(!empty($options['order']))
+			{
+				$collections->sort($options['order']);
+			}
 			foreach ($collections as $value) {
 				$result[] = $value;
 			}
@@ -130,6 +153,72 @@ class Mongodb implements db
 			$this->error = $e->getMessage();
 			return false;
 		}
+	}
+
+	//分页
+	public function limit($skip = 0, $limit = 1)
+	{
+		$this->options['skip'] = $skip;
+		$this->options['limit'] =  $limit;
+		return $this;
+	}
+
+	//排序
+	public function order($order){
+		if(empty($order)){
+			return $this;
+		}
+		if(!is_array($order)){
+			$order = $this->order2array($order);
+		}
+		$this->options['order'] = $order;
+		return $this;
+	}
+
+	//排序字段转换
+	private function order2array($order){
+		$sort = [];
+		$orders = explode(',',$order);
+		foreach ($orders as $key => $order) {
+			list($s,$o) = preg_split('/\s+/',$order,2);
+			$o = $o == 'asc' ? 1 : -1;
+			$sort[] = [$s=>$o];
+		}
+		return $sort;
+	}
+
+	//选中字段
+	public function fields($fields){
+		if(empty($fields)){
+			return $this;
+		}
+		if(!is_array($fields)){
+			$fields = $this->fields2array($fields);
+		}
+		$this->options['fields'] = $fields;
+		return $this;
+	}
+
+	//字段格式转化
+	private function fields2array($fields){
+		$fields = explode(',',$fields);
+		$ret = [];
+		foreach ($fields as $key => $field) {
+			$ret[$field] = true;
+		}
+		return $ret;
+	}
+
+	//获取操作参数
+	public function getOptions(){
+		$default = [
+			'fields' => [],
+			'limit' => '',
+			'skip' => 0,
+			'order' => [],
+		];
+
+		return array_merge($default,$this->options);
 	}
 
 	//获取最先匹配的文档
@@ -215,13 +304,47 @@ class Mongodb implements db
 	public function getError(){
 		return $this->error;
 	}
-
+	//切换数据库
 	public function selectDB($db){
 		$this->link->selectDB($db);
 		$this->db = $this->link->$db;
+		return $this;
 	}
 
+	//批量插入
+	public function multiInsert($data, $options = [])
+	{
+		try{
+			return $this->collection->batchInsert($data,$options);
+		}catch(\MongoCursorException $e){
+			$this->error = $e->getMessage();
+			return false;
+		}
+	}
 
-	public function multiInsert(){}
+	//删除集合
+	public function drop($collection_name=null){
+		if(!empty($collection_name)){
+			return $this->db->$collection_name->drop();
+		}
+		return $this->collection->drop();
+	}
+
+	//删除数据库
+	public function dropDatabase(){
+		return $this->db->dropDatabase();
+	}
+
+	 //执行mongodb命令
+	public function runCommand($command_data,$options=[]){
+		if(empty($command_data)){
+			return false;
+		}
+		return $this->db->command($command_data,$options=[]);
+	}
+	//复位
+	private function reset(){
+		$this->options = [];
+	}
 	
 }
