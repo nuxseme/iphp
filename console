@@ -3,18 +3,51 @@
 fail='[\033[1;31mfail\033[0m]'
 ok='[\033[1;32mOK\033[0m]'
 
-#设定默认指令
+#设定默认指令为start  
 if [ -z "$1" ];then
 	cmd='start'
 else
 	cmd=$1
 fi
+#移除动作参数 
+shift
+
+
+echo $1 
+exit;
+#启动应用
+start(){
+	echo $@
+	echo $1
+	shift
+	echo $1 
+}
+
+#停止应用
+stop(){
+	echo 'stop'
+}
+
+#获取应用状态
+status(){
+	echo 'status'
+}
+#应用列表
+list(){
+	echo 'list'
+}
+
+#重启应用
+restart(){
+	stop
+	start
+	echo -e "restart $ok"
+}
 
 case $cmd in
 	start)
-		start
+		start $@
 		exit 0;;
-   
 	stop)
 		stop
 		exit 0;;

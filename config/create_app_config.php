@@ -58,7 +58,6 @@ if(!is_file($index_file))
 <?php
 /**
 * @author nuxse
-* @date 
 * @todo 默认控制器
 */
 namespace Controller;

@@ -60,7 +60,7 @@ class HttpServer{
     */
     public function onManagerStop($serv){
         //$this->log(SERVER_NAME."[#manager] stop");
-         exec("echo `date +'%m-%d %H:%M%:%S'` onManagerStop >>".FRAME_PATH."log/process.log");
+         exec("echo `date +'%m-%d %H:%M%:%S'` onManagerStop >>".FRAME_PATH.'log/'.APP_NAME.'process.log');
     }
 
     /**
@@ -71,8 +71,8 @@ class HttpServer{
     */
     public function onManagerStart($serv){
         global $config_file;
-        $this->setProcessName('iphp-manager:('.$config_file.')');
-       exec("echo `date +'%m-%d %H:%M%:%S'` ManagerStart >> ".FRAME_PATH."log/process.log");
+        $this->setProcessName(APP_NAME.':iphp-manager:('.$config_file.')');
+       exec("echo `date +'%m-%d %H:%M%:%S'` ManagerStart >> ".FRAME_PATH.'log/'.APP_NAME.'process.log');
         //$this->log(SERVER_NAME."[#manager] start");
     }
     
@@ -87,10 +87,10 @@ class HttpServer{
         //$this->loadPlugin();
         exec("echo `date +'%m-%d %H:%M%:%S'` WorkerStart >> ".FRAME_PATH."log/process.log");
         if ($worker_id >= config($this->config,'global.work_num')){
-            $this->setProcessName('iphp-task:#'.$worker_id);
+            $this->setProcessName(APP_NAME.':iphp-task:#'.$worker_id);
             //$this->log("php-task[#{$worker_id}] running on ".$this->c('server.host').":".$this->c('server.port'));
         }else{
-            $this->setProcessName('iphp-worker:#'.$worker_id);
+            $this->setProcessName(APP_NAME.':iphp-worker:#'.$worker_id);
             //$this->log("php-worker[#{$worker_id}] running on ".$this->c('server.host').":".$this->c('server.port'));
             //apply_action('on_worker_start',$server,$worker_id);
         }
@@ -117,7 +117,7 @@ class HttpServer{
     */
     public function onStart($serv){
         exec("echo `date +'%m-%d %H:%M%:%S'` start >> ".FRAME_PATH."log/process.log");
-        $this->setProcessName('iphp-master:host=' . config($this->config,'server.host') . ' port=' . config($this->config,'server.port'));
+        $this->setProcessName(APP_NAME.':iphp-master:host=' . config($this->config,'server.host') . ' port=' . config($this->config,'server.port'));
         //apply_action('server_start',$serv);
     }
 
