@@ -23,7 +23,7 @@ class HttpServer{
                 'log_file' => FRAME_PATH.'log/httpServer.log',
                 'max_request' => 100000,
                 'max_conn' => 256,
-                'daemonize' => 0,//是否退化为守护进程
+                'daemonize' => 1,//是否退化为守护进程
             ],config($this->config,'global'));
         $server = new \swoole_http_server(config($this->config,'server.host'), config($this->config,'server.port'));
         $this->http_server = $server;
@@ -117,7 +117,7 @@ class HttpServer{
     */
     public function onStart($serv){
         exec("echo `date +'%m-%d %H:%M%:%S'` start >> ".FRAME_PATH."log/process.log");
-        $this->setProcessName(APP_NAME.':iphp-master:host=' . config($this->config,'server.host') . ' port=' . config($this->config,'server.port'));
+        $this->setProcessName(APP_NAME.':iphp-master: host=' . config($this->config,'server.host') . ' port=' . config($this->config,'server.port'));
         //apply_action('server_start',$serv);
     }
 

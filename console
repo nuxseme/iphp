@@ -4,49 +4,113 @@ fail='[\033[1;31mfail\033[0m]'
 ok='[\033[1;32mOK\033[0m]'
 
 #设定默认指令为start  
-if [ -z "$1" ];then
-	cmd='start'
-else
-	cmd=$1
+cmd=$1
+
+if [ ! -z  $2 ];then
+	app_name=$2
 fi
-#移除动作参数 
-shift
+PHP='/opt/software/php5/bin/php'
+iphp='/opt/work/iphp'
 
-
-echo $1 
-exit;
 #启动应用
 start(){
-	echo $@
-	echo $1
-	shift
-	echo $1 
+
+	if [ -z "$app_name" ];then
+		for app in `ls ./config/|grep -v php|grep -v temp|awk -F . '{print $1}'`
+		do
+			message=`$PHP $iphp/appServer.php $app `
+			if [ -z "$message" ];then
+				echo -e "$ok start application $app"
+			else 
+				echo -e "$fail start application $app"
+			fi
+		done
+	else
+		message=`$PHP $iphp/appServer.php $app_name `
+		if [ -z "$message" ];then
+			echo -e "$ok start application $app_name"
+		else
+			echo -e "$fail start application $app_name"
+		fi
+	fi
 }
 
 #停止应用
 stop(){
-	echo 'stop'
+	if [ -z "$app_name" ];then
+		apps=`ps aux|grep iphp|grep -v grep|awk '{print $11}'|awk -F : '{print $1}'|sort|uniq`
+		for app in $apps
+		do
+			message=`ps aux|grep $app|grep -v grep |awk '{print $2}'|xargs kill -9`
+			if [ -z "$message" ];then
+				echo -e "$ok stop $app"
+			else
+				echo -e "$fail stop $app"
+			fi
+		done
+	else
+		message=`ps aux|grep iphp|grep $app_name|grep -v grep |awk '{print $2}'|xargs kill -9`
+		if [ -z "$message" ];then
+			echo -e "$ok stop $app_name"
+		else
+			echo -e "$fail stop $app_name"
+		fi
+	fi	
 }
 
 #获取应用状态
 status(){
-	echo 'status'
+
+	if [ -z "$app_name" ];then
+		apps=`ps aux|grep iphp|grep -v grep|awk '{print $11}'|awk -F : '{print $1}'|sort|uniq`
+		for app in $apps
+		do
+			host=`ps aux|grep iphp|grep $app|grep master|grep -v grep|awk '{print $12}'`
+			port=`ps aux|grep iphp|grep $app|grep master|grep -v grep|awk '{print $13}'`
+			config=`ps aux|grep iphp|grep mongoadmin|grep manager|grep -v grep|awk '{print $11}'|awk -F : '{print $3}'`
+			echo $app $host $port $config
+		done
+	else
+		host=`ps aux|grep iphp|grep $app_name|grep master|grep -v grep|awk '{print $12}'`
+		host=`ps aux|grep iphp|grep $app_name|grep master|grep -v grep|awk '{print $12}'`
+		config=`ps aux|grep iphp|grep mongoadmin|grep manager|grep -v grep|awk '{print $11}'|awk -F : '{print $3}'`
+		echo $app $host $port $config
+
+	fi
 }
 #应用列表
 list(){
-	echo 'list'
+	ps aux|grep iphp|grep -v grep|awk '{print $11}'|awk -F : '{print $1}'|sort|uniq
 }
 
 #重启应用
 restart(){
-	stop
-	start
-	echo -e "restart $ok"
+
+	if [ -z "$app_name" ];then
+		apps=`ps aux|grep iphp|grep -v grep|awk '{print $11}'|awk -F : '{print $1}'|sort|uniq`
+		for app in $apps
+		do
+			message=`ps aux|grep iphp|grep $app|grep master|grep -v grep|awk '{print $2}'|xargs kill -USR1`
+			if [ -z "$message" ];then
+				echo -e "$ok restart $app"
+			else
+				echo -e "$fail restart $app"
+			fi
+		done
+	else
+		message=`ps aux|grep iphp|grep $app_name|grep master|grep -v grep|awk '{print $2}'|xargs kill -USR1`
+		if [ -z "$message" ];then
+			echo -e "$ok restart $app_name"
+		else
+			echo -e "$fail restart $app_name"
+		fi
+	fi
 }
 
+#case 结构
 case $cmd in
 	start)
-		start $@
+		start 
 		exit 0;;
 	stop)
 		stop

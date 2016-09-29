@@ -1,0 +1,56 @@
+#!/bin/bash
+#环境监测
+
+ok='[\033[0;32;1mok\033[0m]'
+fail='[\033[0;31;1mok\033[0m]'
+echo -e "环境监测\n"
+#nginx
+nginx=`ps aux|grep nginx|grep -v grep`
+if [ -n "$nginx" ];then
+	echo -e "nginx........$ok"
+	`nginx -v`
+else
+	echo -e "nginx........$fail"
+fi
+echo -e "\n"
+#php
+PHP=`php -v`
+if [ -n "$PHP" ];then
+	echo -e "php........$ok"
+	php -v
+else
+	echo -e "php........$fail"
+fi
+echo -e "\n"
+
+#phpunit
+phpunit=`phpunit -v`
+if [ -n "$phpunit" ];then
+	echo -e "phpunit........$ok"
+	php -v
+else
+	echo -e "phpunit........$fail"
+fi
+echo -e "\n"
+#php-fpm
+php_fpm=`ps aux|grep php-fpm|grep -v grep`
+
+if [ -n "$php_fpm" ];then
+	echo -e "php-fpm........$ok"
+else
+	echo -e "php-fpm........$fail"
+fi
+echo -e "\n"
+#swoole
+swoole=`php -r "echo SWOOLE_VERSION;"`
+if [ -n "$swoole" ];then
+	echo -e "swoole........$ok"
+	echo "SWOOLE_VERSION=>"$swoole
+else
+	echo -e "swoole........$fail"
+fi
+echo -e "\n"
+
+
+
+
