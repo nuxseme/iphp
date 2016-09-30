@@ -4,6 +4,10 @@
 ok='[\033[0;32;1mok\033[0m]'
 fail='[\033[0;31;1mok\033[0m]'
 echo -e "环境监测\n"
+#host
+
+uname -a
+echo -e "\n"
 #nginx
 nginx=`ps aux|grep nginx|grep -v grep`
 if [ -n "$nginx" ];then
