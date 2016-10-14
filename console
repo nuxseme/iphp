@@ -67,7 +67,7 @@ status(){
 		do
 			host=`ps aux|grep iphp|grep $app|grep master|grep -v grep|awk '{print $12}'`
 			port=`ps aux|grep iphp|grep $app|grep master|grep -v grep|awk '{print $13}'`
-			config=`ps aux|grep iphp|grep mongoadmin|grep manager|grep -v grep|awk '{print $11}'|awk -F : '{print $3}'`
+			config=`ps aux|grep iphp|grep $app|grep manager|grep -v grep|awk '{print $11}'|awk -F : '{print $3}'`
 			echo $app $host $port $config
 		done
 	else

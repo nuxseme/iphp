@@ -1,7 +1,6 @@
 <?php
 /**
 * @author nuxse
-* @date 2016-04-14 11:26:34
 * @todo 框架服务器
 */
 
