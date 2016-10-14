@@ -73,7 +73,7 @@ status(){
 	else
 		host=`ps aux|grep iphp|grep $app_name|grep master|grep -v grep|awk '{print $12}'`
 		host=`ps aux|grep iphp|grep $app_name|grep master|grep -v grep|awk '{print $12}'`
-		config=`ps aux|grep iphp|grep mongoadmin|grep manager|grep -v grep|awk '{print $11}'|awk -F : '{print $3}'`
+		config=`ps aux|grep iphp|grep $app_name|grep manager|grep -v grep|awk '{print $11}'|awk -F : '{print $3}'`
 		echo $app $host $port $config
 
 	fi
