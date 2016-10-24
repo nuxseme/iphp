@@ -1,8 +1,13 @@
 {
     "name": "nuxseme/iphp",
+    "description": "nuxsem iphp",
+    "type": "library",
     "license": "MIT",
-    "require": {
-       "monolog/monolog": "1.0.*"       
-    }
-    
+    "authors": [
+        {
+            "name": "He Ya Dong",
+            "email": "nuxseme@gmail.com"
+        }
+    ],
+    "require": {}
 }
