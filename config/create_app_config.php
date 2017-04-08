@@ -2,7 +2,7 @@
 /**
 * @author hyd
 * @date 09-18-2016 09:33
-* @todo 创建应用配置文件
+* @description 创建应用配置文件
 * [usage]  $php create_app_config.php  app_name port
 */
 $fail="[\033[1;31mfail\033[0m]";

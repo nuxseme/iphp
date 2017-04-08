@@ -89,7 +89,7 @@ class HttpServer{
             $this->setProcessName(APP_NAME.':iphp-task:#'.$worker_id);
             //$this->log("php-task[#{$worker_id}] running on ".$this->c('server.host').":".$this->c('server.port'));
         }else{
-            $this->setProcessName(APP_NAME.':iphp-worker:#'.$worker_id);
+            $this->setProcessName(APP_NAME.':iphpworker:#'.$worker_id);
             //$this->log("php-worker[#{$worker_id}] running on ".$this->c('server.host').":".$this->c('server.port'));
             //apply_action('on_worker_start',$server,$worker_id);
         }
