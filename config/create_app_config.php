@@ -5,6 +5,11 @@
 * @description 创建应用配置文件
 * [usage]  $php create_app_config.php  app_name port
 */
+if($argv[1] == 'help') {
+    echo 'usage php create_app_config.php  app_name port[9876]',PHP_EOL;
+    exit();
+}
+
 $fail="[\033[1;31mfail\033[0m]";
 $ok="[\033[1;32mOK\033[0m]";
 $src_config_file = './server.ini.temp';
@@ -58,7 +63,7 @@ if(!is_file($index_file))
 <?php
 /**
 * @author nuxse
-* @todo 默认控制器
+* @description 默认控制器
 */
 namespace Controller;
 use \lib\Controller;
@@ -67,7 +72,7 @@ class IndexController  extends Controller
 
     public function index()
     {
-      echo __METHOD__.PHP_EOL;
+      echo __METHOD__,PHP_EOL;
     }
 
 }

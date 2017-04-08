@@ -4,7 +4,10 @@ fail='[\033[1;31mfail\033[0m]'
 ok='[\033[1;32mOK\033[0m]'
 
 #设定默认指令为start  
-cmd=$1
+if [ $# == 1 ];then
+    cmd='start'
+    app_name=$1
+fi
 
 if [ ! -z  $2 ];then
 	app_name=$2

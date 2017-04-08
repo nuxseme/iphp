@@ -1,5 +1,5 @@
 #!/bin/bash
-# for mac
+# for mac and linux
 os_linux=`uname -a|grep Linux`
 os_mac=`uname -a|grep Mac`
 if [ ! -z "$os_mac" ];then
@@ -11,15 +11,14 @@ else
 fi
 
 Linux(){
-	iphp_path='/home/www/iphp'
-	PHP7='/usr/bin/php'
-	PHP5='/usr/local/php5.6/bin/php'
+    #根据实际情况定义
+	iphp_path='/opt/work/iphp'
+	PHP7='php'
 }
 
 Mac(){
 	iphp_path='/Users/hyd/work/iphp'
-	PHP7='/usr/local/bin/php'
-	PHP5='/usr/bin/php5'
+	PHP7='php'
 }
 case $os in
 	Linux)
