@@ -1,4 +1,5 @@
 #!/bin/bash
+#仅启动框架
 # for mac and linux
 os_linux=`uname -a|grep Linux`
 os_mac=`uname -a|grep Mac`
@@ -43,11 +44,12 @@ else
 	cmd=$1
 fi
 start(){
-	out=`$PHP7 $iphp_path/appServer.php`
+	out=`$PHP7 $iphp_path/appServer.php server`
 	if [ ! -z "$out" ];then
-		echo -e "Start appServer $ok"
-	else
+		echo $out
 		echo -e "Start appServer $fail"
+	else
+		echo -e "Start appServer $ok"
 	fi
 }
 stop(){

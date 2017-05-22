@@ -6,7 +6,8 @@ fail='[\033[0;31;1mok\033[0m]'
 echo -e "环境监测\n"
 #host
 
-uname -a
+#uname -a
+cat /etc/redhat-release
 echo -e "\n"
 #nginx
 nginx=`ps aux|grep nginx|grep -v grep`
@@ -55,6 +56,20 @@ else
 fi
 echo -e "\n"
 
+
+#mongodb
+mongodb=`ps aux|grep mongodb|grep -v grep`
+
+if [ -n "$mongodb" ];then
+	echo -e "mongodb........$ok"
+else
+	echo -e "mongodb........$fail"
+fi
+echo -e "\n"
+
+mongodb -version
+
+php -m|grep mongodb
 
 
 

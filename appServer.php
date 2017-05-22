@@ -37,8 +37,11 @@ if (!function_exists('exec')) {
 }
 //加载应用配置
 $config_file=__DIR__.'/config/'.$app_name.'.ini';
-if(is_file($config_file))
-	$config=parse_ini_file($config_file,true);
+if(is_file($config_file)){
+    $config=parse_ini_file($config_file,true);
+}else{
+    exit("$app_name is not exist".PHP_EOL);
+}
 
 //定义环境变量
 define('FRAME_PATH', __DIR__.'/');

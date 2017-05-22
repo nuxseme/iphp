@@ -18,7 +18,7 @@ class HttpServer{
     }
     //swoole http服务器运行
 	public function run(){
-		$swcfg = array_merge([
+		$swoole_config = array_merge([
                 'log_file' => FRAME_PATH.'log/httpServer.log',
                 'max_request' => 100000,
                 'max_conn' => 256,
@@ -26,7 +26,7 @@ class HttpServer{
             ],config($this->config,'global'));
         $server = new \swoole_http_server(config($this->config,'server.host'), config($this->config,'server.port'));
         $this->http_server = $server;
-        $server->set($swcfg); //设定swoole扩展的配置
+        $server->set($swoole_config); //设定swoole扩展的配置
          $server->on('Start',array($this,'onStart')); // 主进程开始 master 监听请求 转发至管理进程
          $server->on('ManagerStart', array($this,'onManagerStart')); //管理进程开始 manager 维护工作进程 安排工作,投递任务
          $server->on('ManagerStop', array($this,'onManagerStop')); 

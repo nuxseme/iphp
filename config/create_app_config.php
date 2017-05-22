@@ -74,6 +74,10 @@ class IndexController  extends Controller
     {
       echo __METHOD__,PHP_EOL;
     }
+     public function context()
+    {
+      echo '{$app_name}';
+    }
 
 }
 eof;

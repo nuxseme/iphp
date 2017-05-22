@@ -1,12 +1,5 @@
 <?php
 /**
- * [helloworld 测试函数]
- * @return [type] [description]
- */
-function helloworld(){
-	echo 'helloworld';
-}
-/**
  * [val 安全返回键值函数]
  * @param  [type] $obj     [对象]
  * @param  [type] $key     [键值]

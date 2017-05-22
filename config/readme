@@ -1,0 +1,3 @@
+创建应用配置文件
+usage php create_app_config.php app_name port[9876]
+会在指定的app_path(/opt/work/{app_name})下创建新的应用目录

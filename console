@@ -3,23 +3,19 @@
 fail='[\033[1;31mfail\033[0m]'
 ok='[\033[1;32mOK\033[0m]'
 
-#设定默认指令为start  
-if [ $# == 1 ];then
-    cmd='start'
-    app_name=$1
-fi
-
+cmd=$1
 if [ ! -z  $2 ];then
 	app_name=$2
 fi
-PHP='/opt/software/php5/bin/php'
+PHP='php'
 iphp='/opt/work/iphp'
 
 #启动应用
 start(){
 
+    #未指定具名应用则启动所有应用
 	if [ -z "$app_name" ];then
-		for app in `ls ./config/|grep -v php|grep -v temp|awk -F . '{print $1}'`
+		for app in `ls ./config/|grep -v php|grep -v temp|grep ini|awk -F . '{print $1}'`
 		do
 			message=`$PHP $iphp/appServer.php $app `
 			if [ -z "$message" ];then
@@ -36,6 +32,7 @@ start(){
 			echo -e "$fail start application $app_name"
 		fi
 	fi
+	echo 'start application over...'
 }
 
 #停止应用

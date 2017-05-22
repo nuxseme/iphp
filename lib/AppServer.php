@@ -2,14 +2,14 @@
 /**
 * @author nuxse
 * @date 2016-04-15 11:11:07
-* @todo 应用服务器
+* @description 应用服务器
 */
 
 namespace lib;
 class AppServer extends HttpServer{
 
 	public $config;
-	public static $ext = ['ico','html','jpg'];
+	public static $ext = ['ico','html','jpg','png','webp','gif','rar','jpeg'];
 	public static $auto_load = ['mongodb'];
 	public function __construct($config){
 		$this->config = $config;
